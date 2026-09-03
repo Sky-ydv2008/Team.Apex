@@ -4,7 +4,7 @@
 # first boot, and the static frontend served from the image (single origin).
 spring:
   datasource:
-    url: jdbc:postgresql://${PGHOST:localhost}:${PGPORT:5432}/${PGDATABASE:apex_innovators}?sslmode=require
+    url: ${JDBC_DATABASE_URL:jdbc:postgresql://${PGHOST:localhost}:${PGPORT:5432}/${PGDATABASE:apex_innovators}?sslmode=prefer}
     username: ${PGUSER:apex}
     password: ${PGPASSWORD:}
     driver-class-name: org.postgresql.Driver

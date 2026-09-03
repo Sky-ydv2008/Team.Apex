@@ -14,4 +14,4 @@ COPY frontend /app/frontend
 EXPOSE 8080
 ENV SPRING_PROFILES_ACTIVE=render \
     JAVA_TOOL_OPTIONS="-XX:MaxRAMPercentage=75"
-CMD ["java", "-jar", "/app/api.jar"]
+ENTRYPOINT ["sh", "-c", "echo DB=$PGHOST:$PGPORT/$PGDATABASE user=$PGUSER sslmode=prefer; exec java -jar /app/api.jar"]
