@@ -10,7 +10,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -53,6 +55,16 @@ public class ProjectController {
     public ProjectDto create(@AuthenticationPrincipal UserPrincipal principal,
                              @Valid @RequestBody ProjectRequest request) {
         return projectService.create(principal, request);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Delete a project: author may remove their own unpublished project, "
+            + "CORE_MEMBER/ADMIN any project")
+    public ResponseEntity<Void> deleteOwn(@AuthenticationPrincipal UserPrincipal principal,
+                                          @PathVariable Long id) {
+        projectService.deleteOwn(principal, id);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")

@@ -8,6 +8,8 @@
  *   redirect to login.html.
  */
 
+import { demoActive, demoFetch } from "./demo-data.js";
+
 export const API_BASE = "/api";
 
 /** localStorage keys — shared with auth.js (do not rename). */
@@ -89,6 +91,24 @@ export async function apiFetch(path, opts = {}) {
         url.searchParams.set(key, String(value));
       }
     }
+  }
+
+  if (demoActive()) {
+    const demoResult = demoFetch(method, path, params, body);
+    if (demoResult && demoResult.__demoError) {
+      const de = demoResult.__demoError;
+      if (de.status === 401 && auth) {
+        const rel = window.location.pathname.replace(/^\//, "") || "index.html";
+        redirectToLogin(rel);
+      }
+      throw new ApiError(de.status, {
+        status: de.status,
+        message: de.message,
+        timestamp: new Date().toISOString(),
+        path: url.pathname,
+      }, url.pathname);
+    }
+    return demoResult;
   }
 
   const headers = { Accept: "application/json" };

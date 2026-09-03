@@ -71,6 +71,15 @@ public class PostController {
         return postService.submit(principal, id);
     }
 
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Author deletes their own post and its comment thread")
+    public ResponseEntity<Void> deleteOwn(@AuthenticationPrincipal UserPrincipal principal,
+                                          @PathVariable Long id) {
+        postService.deleteOwn(principal, id);
+        return ResponseEntity.noContent().build();
+    }
+
     @PostMapping("/{id}/like")
     @Operation(summary = "Like a published post (idempotent)")
     public ResponseEntity<Void> like(@AuthenticationPrincipal UserPrincipal principal,

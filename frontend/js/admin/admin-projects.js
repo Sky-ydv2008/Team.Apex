@@ -6,7 +6,7 @@
  */
 
 import { apiFetch, errorMessage } from "../api.js";
-import { guardAdmin } from "../auth.js";
+import { guardModerator } from "../auth.js";
 import {
   icon, esc, formatDate, statusBadge, injectAdminShell,
   openDialog, closeDialog, confirmDialog, toast, renderPagination, pageInfo,
@@ -234,7 +234,7 @@ function wireEvents() {
 }
 
 async function boot() {
-  const user = await guardAdmin();
+  const user = await guardModerator();
   if (!user) return;
   injectAdminShell("projects", user);
   wireEvents();

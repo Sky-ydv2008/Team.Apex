@@ -1,3 +1,5 @@
+import { demoActive } from "./demo-data.js";
+
 /**
  * Apex Innovators — components.js
  * Shared UI: injectable navbar/footer/admin shell, session-aware auth UI,
@@ -339,6 +341,7 @@ export function mountAuthUI() {
       <span class="nav-user-name">${esc(user.name)}</span>
     </span>`,
   ];
+  parts.push(`<a class="btn btn-sm btn-ghost" href="${here("profile.html") ? "#" : "profile.html"}">${icon("user")} Profile</a>`);
   if (user.role === "ADMIN") {
     parts.push(`<a class="btn btn-sm btn-outline" href="admin/dashboard.html">${icon("dashboard")} Dashboard</a>`);
   }
@@ -368,7 +371,8 @@ const ADMIN_SECTIONS = [
   { id: "achievements", label: "Achievements", href: "achievements.html", file: "achievements.html", icon: "award" },
   { id: "messages", label: "Messages", href: "messages.html", file: "messages.html", icon: "mail" },
 ];
-
+/** Sections a CORE_MEMBER may reach (content moderation only). */
+const CORE_SECTIONS = new Set(["projects", "posts"]);
 /**
  * Fill the admin layout skeleton: #admin-sidebar + #admin-topbar.
  * Expects page markup: .admin-layout > aside#admin-sidebar + .admin-main.
@@ -380,7 +384,10 @@ export function injectAdminShell(active, user) {
 
   const section = ADMIN_SECTIONS.find((s) => s.id === active) || ADMIN_SECTIONS[0];
 
-  const links = ADMIN_SECTIONS.map((s) => {
+  const sections = (user && user.role === "CORE_MEMBER")
+    ? ADMIN_SECTIONS.filter((s) => CORE_SECTIONS.has(s.id))
+    : ADMIN_SECTIONS;
+  const links = sections.map((s) => {
     const on = s.id === (active || section.id);
     return `<a class="admin-nav-link${on ? " active" : ""}" href="${s.href}"${on ? ' aria-current="page"' : ""}>
       ${icon(s.icon)}<span>${esc(s.label)}</span>
@@ -389,7 +396,7 @@ export function injectAdminShell(active, user) {
 
   if (aside) {
     aside.innerHTML = `
-      <div class="admin-brand">${brandBlock()}<span class="badge b-admin">Admin</span></div>
+      <div class="admin-brand">${brandBlock()}<span class="badge b-admin">${user && user.role === "CORE_MEMBER" ? "Moderation" : "Admin"}</span></div>
       <p class="admin-nav-label">Manage</p>
       <nav class="admin-nav" aria-label="Admin sections">${links}</nav>
       <div class="admin-side-foot">
@@ -666,7 +673,18 @@ export function pageInfo(pageObj) {
 }
 
 /* ================= Auto-init ================= */
+function mountDemoBanner() {
+  if (!document.body || document.getElementById("demo-banner")) return;
+  const b = document.createElement("div");
+  b.id = "demo-banner";
+  b.setAttribute("role", "status");
+  b.style.cssText = "position:sticky;top:0;z-index:120;background:#082f49;color:#7dd3fc;font-size:.8rem;text-align:center;padding:.5rem 1rem;border-bottom:1px solid #155e75;";
+  b.innerHTML = "Demo preview — built-in sample data. Accounts, posting and the admin panel run on the live backend (see the <a href=\"https://github.com/Sky-ydv2008/Team.Apex#readme\" style=\"color:#22d3ee\" target=\"_blank\" rel=\"noopener\">repo README</a>).";
+  document.body.prepend(b);
+}
+
 function autoInit() {
+  if (demoActive()) mountDemoBanner();
   if (document.getElementById("nav-root")) injectNav();
   if (document.getElementById("footer-root")) injectFooter();
   if (document.getElementById("nav-actions")) mountAuthUI();

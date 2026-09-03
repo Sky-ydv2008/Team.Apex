@@ -1,9 +1,13 @@
 package com.apexinnovators.service;
 
+import com.apexinnovators.audit.AuditService;
 import com.apexinnovators.dto.AuthResponse;
 import com.apexinnovators.dto.LoginRequest;
 import com.apexinnovators.dto.RefreshResponse;
 import com.apexinnovators.dto.RefreshTokenRequest;
+import com.apexinnovators.dto.PasswordChangeRequest;
+import com.apexinnovators.dto.ProfileResponse;
+import com.apexinnovators.dto.ProfileUpdateRequest;
 import com.apexinnovators.dto.RegisterRequest;
 import com.apexinnovators.dto.UserDto;
 import com.apexinnovators.entity.Profile;
@@ -14,6 +18,7 @@ import com.apexinnovators.exception.ApiException;
 import com.apexinnovators.repository.ProfileRepository;
 import com.apexinnovators.repository.UserRepository;
 import com.apexinnovators.security.JwtService;
+import com.apexinnovators.security.UserPrincipal;
 import java.util.Locale;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -34,6 +39,7 @@ public class AuthService {
     private final ProfileRepository profileRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final AuditService auditService;
 
     /** Creates a MEMBER account (ACTIVE) plus its empty profile row, then issues tokens. */
     @Transactional
@@ -96,6 +102,77 @@ public class AuthService {
 
     public UserDto toUserDto(User user) {
         return new UserDto(user.getId(), user.getName(), user.getEmail(), user.getRole(), user.getStatus());
+    }
+
+    /** Signed-in member views the account plus their public profile. */
+    @Transactional(readOnly = true)
+    public ProfileResponse profile(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, "Account not found"));
+        return toProfileResponse(user);
+    }
+
+    /** Members control their own display profile and display name. */
+    @Transactional
+    public ProfileResponse updateProfile(UserPrincipal actor, ProfileUpdateRequest request) {
+        User user = userRepository.findById(actor.getId())
+                .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, "Account not found"));
+        if (request.name() != null && !request.name().trim().equals(user.getName())) {
+            user.setName(request.name().trim());
+            userRepository.save(user);
+        }
+        Profile profile = profileRepository.findByUserId(user.getId()).orElse(null);
+        if (profile == null) {
+            profile = new Profile();
+            profile.setUserId(user.getId());
+        }
+        boolean touched = false;
+        if (request.headline() != null && !request.headline().equals(profile.getHeadline())) {
+            profile.setHeadline(request.headline()); touched = true;
+        }
+        if (request.bio() != null && !request.bio().equals(profile.getBio())) {
+            profile.setBio(request.bio()); touched = true;
+        }
+        if (request.github() != null && !request.github().equals(profile.getGithub())) {
+            profile.setGithub(request.github()); touched = true;
+        }
+        if (request.linkedin() != null && !request.linkedin().equals(profile.getLinkedin())) {
+            profile.setLinkedin(request.linkedin()); touched = true;
+        }
+        if (request.photoUrl() != null && !request.photoUrl().equals(profile.getPhotoUrl())) {
+            profile.setPhotoUrl(request.photoUrl()); touched = true;
+        }
+        if (touched || profile.getId() == null) {
+            profileRepository.save(profile);
+        }
+        auditService.record(actor.getId(), "UPDATE", "Profile", user.getId(),
+                "Updated own profile (user #" + actor.getId() + ")");
+        return toProfileResponse(user);
+    }
+
+    /** Members change their own password after confirming the current one. */
+    @Transactional
+    public void changePassword(UserPrincipal actor, PasswordChangeRequest request) {
+        User user = userRepository.findById(actor.getId())
+                .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED, "Account not found"));
+        if (!passwordEncoder.matches(request.currentPassword(), user.getPasswordHash())) {
+            throw new ApiException(HttpStatus.BAD_REQUEST, "Current password is incorrect");
+        }
+        user.setPasswordHash(passwordEncoder.encode(request.newPassword()));
+        userRepository.save(user);
+        auditService.record(actor.getId(), "UPDATE", "Password", user.getId(),
+                "Changed own password (user #" + actor.getId() + ")");
+    }
+
+    private ProfileResponse toProfileResponse(User user) {
+        Profile profile = profileRepository.findByUserId(user.getId()).orElse(null);
+        return new ProfileResponse(
+                user.getId(), user.getName(), user.getEmail(), user.getRole(), user.getStatus(),
+                profile == null ? null : profile.getHeadline(),
+                profile == null ? null : profile.getBio(),
+                profile == null ? null : profile.getGithub(),
+                profile == null ? null : profile.getLinkedin(),
+                profile == null ? null : profile.getPhotoUrl());
     }
 
     private AuthResponse buildAuthResponse(User user) {

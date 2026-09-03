@@ -153,6 +153,19 @@ public class PostService {
         return toDto(post, null);
     }
 
+    /** Authors may remove their own posts (any status) with their threads. */
+    @Transactional
+    public void deleteOwn(UserPrincipal actor, Long id) {
+        Post post = requirePost(id);
+        requireAuthor(post, actor);
+        String title = post.getTitle();
+        commentRepository.deleteByPostIdIn(List.of(post.getId()));
+        postLikeRepository.deleteByPostIdIn(List.of(post.getId()));
+        postRepository.delete(post);
+        auditService.record(actor.getId(), "DELETE", "Post", id,
+                "Deleted own post '" + title + "' (user #" + actor.getId() + ")");
+    }
+
     /** ADMIN creates a post directly; author is the acting admin, status defaults to PUBLISHED. */
     @Transactional
     public PostDto createAdmin(UserPrincipal actor, AdminCreatePostRequest request) {

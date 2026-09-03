@@ -5,7 +5,7 @@
  */
 
 import { apiFetch, errorMessage } from "../api.js";
-import { guardAdmin } from "../auth.js";
+import { guardModerator } from "../auth.js";
 import {
   icon, esc, avatar, humanize, typeChip, statusBadge, timeAgo,
   injectAdminShell, openDialog, closeDialog, toast, renderPagination, pageInfo,
@@ -99,7 +99,7 @@ function openReview(p) {
     <div class="detail-block">
       <h4>Moderation</h4>
       <p class="muted" style="font-size:0.85rem;margin-bottom:0.8rem;">
-        APPROVED makes the post visible to members with the app open; PUBLISHED surfaces it publicly. REJECTED hides it and notifies the author flow.
+        APPROVED marks it reviewed and public; PUBLISHED also surfaces it publicly; REJECTED hides it. CORE_MEMBER and ADMIN can moderate posts.
       </p>
       <div class="row-actions">
         ${action("APPROVED", "Approve", "btn-outline", false)}
@@ -190,7 +190,7 @@ function wireEvents() {
 }
 
 async function boot() {
-  const user = await guardAdmin();
+  const user = await guardModerator();
   if (!user) return;
   injectAdminShell("posts", user);
   wireEvents();

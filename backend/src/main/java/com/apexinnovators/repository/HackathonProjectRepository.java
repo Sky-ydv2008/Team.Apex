@@ -9,4 +9,6 @@ public interface HackathonProjectRepository extends JpaRepository<HackathonProje
     List<HackathonProject> findByHackathonId(Long hackathonId);
 
     List<HackathonProject> findByProjectId(Long projectId);
+
+    void deleteByProjectId(Long projectId);
 }

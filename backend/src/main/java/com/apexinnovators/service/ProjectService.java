@@ -14,6 +14,9 @@ import com.apexinnovators.entity.Role;
 import com.apexinnovators.entity.Technology;
 import com.apexinnovators.entity.User;
 import com.apexinnovators.exception.ApiException;
+import com.apexinnovators.repository.BookmarkRepository;
+import com.apexinnovators.repository.HackathonProjectRepository;
+import com.apexinnovators.repository.ProjectImageRepository;
 import com.apexinnovators.repository.ProjectMemberRepository;
 import com.apexinnovators.repository.ProjectRepository;
 import com.apexinnovators.repository.ProjectTechnologyRepository;
@@ -43,6 +46,9 @@ public class ProjectService {
     private final ProjectRepository projectRepository;
     private final ProjectMemberRepository projectMemberRepository;
     private final ProjectTechnologyRepository projectTechnologyRepository;
+    private final HackathonProjectRepository hackathonProjectRepository;
+    private final ProjectImageRepository projectImageRepository;
+    private final BookmarkRepository bookmarkRepository;
     private final TechnologyRepository technologyRepository;
     private final UserRepository userRepository;
     private final ProjectAssembler projectAssembler;
@@ -173,14 +179,44 @@ public class ProjectService {
         return projectAssembler.toDto(project);
     }
 
-    /** Deleting a project relies on the schema FKs (ON DELETE CASCADE) for child rows. */
+    /** Admin/core moderation: delete any project. */
     @Transactional
     public void deleteByAdmin(UserPrincipal actor, Long id) {
-        Project project = requireProject(id);
-        String title = project.getTitle();
-        projectRepository.delete(project);
+        requireProject(id);
+        deleteInternal(actor, id);
         auditService.record(actor.getId(), "DELETE", "Project", id,
-                "Deleted project '" + title + "'");
+                "Deleted project (moderation) by user #" + actor.getId());
+    }
+
+    /** Members delete their own non-published project; core/admin may delete any project. */
+    @Transactional
+    public void deleteOwn(UserPrincipal actor, Long id) {
+        Project project = requireProject(id);
+        boolean privileged = actor.getRole() == Role.ADMIN || actor.getRole() == Role.CORE_MEMBER;
+        if (!privileged) {
+            if (project.getStatus() == ProjectStatus.PUBLISHED || project.getStatus() == ProjectStatus.APPROVED) {
+                throw new ApiException(HttpStatus.FORBIDDEN,
+                        "Published projects cannot be deleted by their authors — ask a core member or admin");
+            }
+            if (!projectMemberRepository.existsByProjectIdAndUserId(project.getId(), actor.getId())) {
+                throw new ApiException(HttpStatus.FORBIDDEN,
+                        "You can only delete projects you are a member of");
+            }
+        }
+        String title = project.getTitle();
+        deleteInternal(actor, id);
+        auditService.record(actor.getId(), "DELETE", "Project", id,
+                "Deleted project '" + title + "' by user #" + actor.getId());
+    }
+
+    /** Removes every row that references the project so MySQL and H2 behave identically. */
+    private void deleteInternal(UserPrincipal actor, Long id) {
+        projectTechnologyRepository.deleteByProjectId(id);
+        projectMemberRepository.deleteByProjectId(id);
+        hackathonProjectRepository.deleteByProjectId(id);
+        projectImageRepository.deleteByProjectId(id);
+        bookmarkRepository.deleteByProjectId(id);
+        projectRepository.deleteById(id);
     }
 
     // ------------------------------------------------------------------

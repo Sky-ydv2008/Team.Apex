@@ -8,7 +8,7 @@ import { apiFetch, errorMessage } from "./api.js";
 import { getUser } from "./auth.js";
 import {
   esc, icon, avatar, humanize, typeChip, timeAgo,
-  mountLoading, mountData, mountEmpty, mountError, renderPagination, pageInfo, toast,
+  mountLoading, mountData, mountEmpty, mountError, renderPagination, pageInfo, toast, confirmDialog,
 } from "./components.js";
 
 const POST_TYPES = ["DISCUSSION", "PROJECT", "ACHIEVEMENT", "HACKATHON", "RESOURCE", "QUESTION", "ANNOUNCEMENT"];
@@ -24,6 +24,8 @@ const composeArea = document.getElementById("compose-area");
 
 /* ---------------- Feed ---------------- */
 function postCardHTML(p) {
+  const me = getUser();
+  const mine = !!(me && Number(p.authorId) === Number(me.id));
   return `<article class="card post-card" data-post="${p.id}">
     <div class="post-top">
       <div class="post-author">
@@ -41,6 +43,7 @@ function postCardHTML(p) {
       <button class="post-action" type="button" data-action="toggle-comments" data-id="${p.id}" aria-expanded="false">
         ${icon("message")} Comments <span data-comment-count>${Number(p.commentCount || 0)}</span>
       </button>
+      ${mine ? `<button class="post-action post-action-danger" type="button" data-action="delete-post" data-id="${p.id}" title="Delete this post">${icon("trash")}</button>` : ""}
     </div>
     <div class="comments" data-comments hidden></div>
   </article>`;
@@ -208,8 +211,30 @@ function wireFeedEvents() {
     if (commentsBtn) {
       const card = commentsBtn.closest("[data-post]");
       if (card) await toggleComments(card);
+      return;
     }
+
+    const delBtn = e.target.closest('[data-action="delete-post"]');
+    if (delBtn) deleteOwnPost(delBtn.dataset.id);
   });
+}
+
+/* ---------------- Delete own post ---------------- */
+async function deleteOwnPost(id) {
+  const confirmed = await confirmDialog({
+    title: "Delete this post?",
+    message: "The post and its whole comment thread will be removed permanently. This cannot be undone.",
+    confirmLabel: "Delete post",
+    tone: "danger",
+  });
+  if (!confirmed) return;
+  try {
+    await apiFetch(`/posts/${id}`, { method: "DELETE", auth: true });
+    toast("Post deleted", "success");
+    load();
+  } catch (err) {
+    toast(errorMessage(err, "Could not delete the post."), "error");
+  }
 }
 
 /* ---------------- Compose (login-gated) ---------------- */

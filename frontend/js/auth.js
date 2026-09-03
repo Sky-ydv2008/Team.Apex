@@ -105,11 +105,30 @@ export async function guardAdmin() {
 }
 
 /**
+ * Moderator guard for content-moderation pages (admin/posts.html, admin/projects.html).
+ * ADMIN and CORE_MEMBER pass; MEMBER/guests are redirected home.
+ * @returns {Promise<object|null>} the moderator user, or null if redirected.
+ */
+export async function guardModerator() {
+  let user;
+  try {
+    user = await apiFetch("/auth/me", { auth: true });
+  } catch (err) {
+    if (err instanceof ApiError && err.status === 401) return null;
+    user = getUser();
+    if (!user) { window.location.assign("login.html"); return null; }
+  }
+  if (!user || (user.role !== "ADMIN" && user.role !== "CORE_MEMBER")) {
+    window.location.assign(homePath());
+    return null;
+  }
+  return user;
+}
+/**
  * Member guard for community-style actions. Returns the user or null and,
  * when not authenticated, redirects to login.html keeping a `next` target.
  */
 export async function requireLogin() {
-  const cached = getUser();
   if (!getToken()) {
     redirectToLogin(window.location.pathname.replace(/^\//, ""));
     return null;
