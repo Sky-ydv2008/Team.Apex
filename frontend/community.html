@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Community — Apex Innovators</title>
+  <meta name="description" content="The Apex Innovators community feed — students of Parul Institute of Engineering and Technology sharing projects, achievements, resources and questions.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Community — Apex Innovators">
+  <meta property="og:description" content="Where student developers share, ask and level up together.">
+  <meta name="theme-color" content="#0a0f1a">
+  <link rel="icon" href="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%2322d3ee'/%3E%3Cpath d='M13 2 3 14h9l-1 8 10-12h-9l1-8z' fill='%23050a14'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body id="top">
+  <header id="nav-root" data-active="community"></header>
+
+  <main id="main-content">
+    <section class="page-hero">
+      <div class="container">
+        <span class="eyebrow">Community feed</span>
+        <h1>Where student builders talk shop</h1>
+        <p class="page-sub">Share a project, celebrate an achievement, drop a resource or ask the question everyone else is too shy to ask. Every member of the PIET community is welcome.</p>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top:2rem;">
+      <div class="container">
+        <div class="community-layout">
+          <div style="display:grid;gap:1.5rem;min-width:0;">
+            <!-- Compose / gate -->
+            <div id="compose-area"></div>
+
+            <!-- Feed -->
+            <div>
+              <div class="section-bar" style="margin-bottom:1rem;">
+                <h2 style="font-size:1.3rem;">Latest posts</h2>
+                <div class="chip-row" id="type-filters" role="group" aria-label="Filter posts by type"></div>
+              </div>
+              <p class="results-meta" id="feed-info" role="status" style="margin-top:0;"></p>
+              <div id="posts-feed" style="margin-top:1rem;display:grid;gap:1rem;"></div>
+              <div id="posts-pager"></div>
+            </div>
+          </div>
+
+          <!-- Side panel -->
+          <aside class="community-side">
+            <div class="card side-card">
+              <h3>Community guidelines</h3>
+              <ul class="prose" style="font-size:0.88rem;gap:0.5rem;color:var(--text-2);">
+                <li>Be specific and generous — explain the “why”.</li>
+                <li>Credit the people and projects you reference.</li>
+                <li>Share links to code, docs and verification when you can.</li>
+                <li>No spam, no homework dumps — show your attempt first.</li>
+              </ul>
+            </div>
+            <div class="card side-card">
+              <h3>New here?</h3>
+              <p class="muted" style="font-size:0.9rem;margin-bottom:0.8rem;">Create an account to post, like and comment. Posts are reviewed by the team before they go public.</p>
+              <div class="link-row">
+                <a class="btn btn-primary btn-sm" href="register.html">Create account</a>
+                <a class="btn btn-outline btn-sm" href="login.html">Log in</a>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer id="footer-root"></footer>
+
+  <script type="module" src="js/components.js"></script>
+  <script type="module" src="js/community.js"></script>
+</body>
+</html>

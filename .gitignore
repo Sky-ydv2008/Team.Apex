@@ -1,0 +1,34 @@
+# --- Backend (Maven / Spring Boot) ---
+backend/target/
+*.class
+*.jar
+!.mvn/wrapper/maven-wrapper.jar
+
+# --- IDE ---
+.idea/
+*.iml
+.vscode/
+.settings/
+.classpath
+.project
+
+# --- OS / editor ---
+Thumbs.db
+.DS_Store
+*.swp
+
+# --- Secrets / environment ---
+.env
+.env.*
+application-local.yml
+*.pem
+*.key
+*.p12
+
+# --- Logs ---
+*.log
+logs/
+
+# --- DB dumps ---
+*.sql.gz
+*.sql.zip

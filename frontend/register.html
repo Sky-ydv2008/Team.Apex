@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Create account — Apex Innovators</title>
+  <meta name="description" content="Create a free Apex Innovators account to join the community of student developers at Parul Institute of Engineering and Technology.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Create account — Apex Innovators">
+  <meta name="theme-color" content="#0a0f1a">
+  <link rel="icon" href="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%2322d3ee'/%3E%3Cpath d='M13 2 3 14h9l-1 8 10-12h-9l1-8z' fill='%23050a14'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body id="top">
+  <header id="nav-root" data-active="register"></header>
+
+  <main id="main-content">
+    <section class="section">
+      <div class="container container-tight">
+        <div class="card card-pad" style="padding:clamp(1.5rem,4vw,2.25rem);">
+          <div style="text-align:center;margin-bottom:1.5rem;">
+            <span class="eyebrow center-rule" style="justify-content:center;">Join the roster</span>
+            <h1 style="font-size:1.7rem;">Create your account</h1>
+            <p class="muted" style="font-size:0.94rem;margin-top:0.4rem;">Free for students of Parul Institute of Engineering and Technology — and anyone the team collaborates with.</p>
+          </div>
+
+          <div id="register-alert" style="margin-bottom:1.1rem;"></div>
+
+          <form id="register-form" class="form" novalidate>
+            <div class="field">
+              <label for="name">Full name</label>
+              <input class="input" id="name" name="name" type="text" maxlength="120" placeholder="e.g. Priya Shah" required autocomplete="name" autofocus>
+            </div>
+            <div class="field">
+              <label for="email">Email</label>
+              <input class="input" id="email" name="email" type="email" maxlength="190" placeholder="you@example.com" required autocomplete="email">
+            </div>
+            <div class="field">
+              <label for="password">Password</label>
+              <input class="input" id="password" name="password" type="password" minlength="8" maxlength="128" placeholder="At least 8 characters" required autocomplete="new-password">
+              <span class="hint">Use at least 8 characters — mix letters, numbers and symbols for a stronger password.</span>
+            </div>
+            <label class="check-row">
+              <input type="checkbox" name="terms" required>
+              <span>I agree to keep the community respectful and to post original work with proper credit.</span>
+            </label>
+            <div class="form-actions">
+              <button class="btn btn-primary btn-lg btn-block" type="submit">
+                <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                Create account
+              </button>
+            </div>
+          </form>
+
+          <p class="center muted" style="font-size:0.9rem;margin-top:1.4rem;">
+            Already registered? <a href="login.html">Log in</a>
+          </p>
+        </div>
+
+        <p class="center faint" style="font-size:0.82rem;margin-top:1.25rem;">
+          Accounts are reviewed by the team; community posts appear after approval.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer id="footer-root"></footer>
+
+  <script type="module" src="js/components.js"></script>
+  <script type="module" src="js/register.js"></script>
+</body>
+</html>

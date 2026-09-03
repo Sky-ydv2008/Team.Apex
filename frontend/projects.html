@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Projects — Apex Innovators</title>
+  <meta name="description" content="Browse the Apex Innovators project archive — student-built software at Parul Institute of Engineering and Technology. Filter by year and technology.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Projects — Apex Innovators">
+  <meta property="og:description" content="Every project we have built, documented with problem, solution and source links.">
+  <meta name="theme-color" content="#0a0f1a">
+  <link rel="icon" href="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%2322d3ee'/%3E%3Cpath d='M13 2 3 14h9l-1 8 10-12h-9l1-8z' fill='%23050a14'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body id="top">
+  <header id="nav-root" data-active="projects"></header>
+
+  <main id="main-content">
+    <section class="page-hero">
+      <div class="container">
+        <span class="eyebrow">Project archive</span>
+        <h1>What the team has built</h1>
+        <p class="page-sub">Real projects with real write-ups — search the archive, filter by year or technology, and open any build for its full story.</p>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top:2rem;">
+      <div class="container">
+        <div class="card filter-bar" style="margin-bottom:0.5rem;">
+          <div class="search-wrap grow">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input class="input" id="filter-q" type="search" placeholder="Search projects by title or description…" aria-label="Search projects">
+          </div>
+          <select class="input" id="filter-year" style="min-width:150px;width:auto;" aria-label="Filter by year"></select>
+          <select class="input" id="filter-tech" style="min-width:200px;width:auto;" aria-label="Filter by technology"></select>
+          <a class="btn btn-ghost" href="projects.html" title="Clear filters">Clear</a>
+        </div>
+        <p class="results-meta" id="results-info" role="status"></p>
+
+        <div id="projects-list" style="margin-top:1.25rem;"></div>
+        <div id="projects-pager"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer id="footer-root"></footer>
+
+  <script type="module" src="js/components.js"></script>
+  <script type="module" src="js/projects.js"></script>
+</body>
+</html>

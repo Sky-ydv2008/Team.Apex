@@ -1,0 +1,157 @@
+/**
+ * Apex Innovators — api.js
+ * Fetch wrapper around the REST surface (prefix `/api`).
+ * - Bearer token (ai_token) attached when opts.auth is true.
+ * - JSON errors normalized to the contract error shape:
+ *   { status, message, timestamp, path } (ApiError carries them).
+ * - Protected calls (auth: true) that receive 401 clear the session and
+ *   redirect to login.html.
+ */
+
+export const API_BASE = "/api";
+
+/** localStorage keys — shared with auth.js (do not rename). */
+export const TOKEN_KEY = "ai_token";
+export const REFRESH_KEY = "ai_refresh";
+export const USER_KEY = "ai_user";
+
+export class ApiError extends Error {
+  /**
+   * @param {number} status
+   * @param {{status:number,message:string,timestamp?:string,path?:string, [k:string]: unknown}} payload
+   * @param {string} url
+   */
+  constructor(status, payload = {}, url = "") {
+    const message = (payload && payload.message) || `Request failed (${status || "network"})`;
+    super(message);
+    this.name = "ApiError";
+    this.status = status;
+    this.messageText = message;
+    this.path = (payload && payload.path) || url;
+    this.timestamp = (payload && payload.timestamp) || new Date().toISOString();
+    this.payload = payload;
+  }
+}
+
+const STATUS_TEXT = {
+  400: "Bad request",
+  401: "Unauthorized",
+  403: "Forbidden",
+  404: "Not found",
+  405: "Method not allowed",
+  409: "Conflict",
+  413: "Payload too large",
+  422: "Validation failed",
+  429: "Too many requests",
+  500: "Internal server error",
+  502: "Bad gateway",
+  503: "Service unavailable",
+};
+
+function loginPath() {
+  // Protected pages may live under /admin/ → login.html sits one level up.
+  const seg = window.location.pathname.split("/").filter(Boolean);
+  return seg.length > 0 && seg[0] === "admin" ? "../login.html" : "login.html";
+}
+
+export function clearSession() {
+  try {
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(REFRESH_KEY);
+    localStorage.removeItem(USER_KEY);
+  } catch (err) {
+    /* storage unavailable — nothing to clear */
+  }
+}
+
+export function redirectToLogin(nextPath) {
+  clearSession();
+  const q = nextPath ? `?next=${encodeURIComponent(nextPath)}` : "";
+  window.location.assign(loginPath() + q);
+}
+
+/**
+ * Fetch a JSON endpoint under the API.
+ * @param {string} path        e.g. "/projects", must start with "/"
+ * @param {object} [opts]
+ * @param {string} [opts.method="GET"]
+ * @param {object} [opts.body]  JSON-serializable body
+ * @param {object} [opts.params] query params (empty/falsy values omitted)
+ * @param {boolean} [opts.auth=false] attach Bearer; 401 → clear + redirect
+ */
+export async function apiFetch(path, opts = {}) {
+  const { method = "GET", body, params, auth = false } = opts;
+
+  const url = new URL(API_BASE + path, window.location.origin);
+  if (params) {
+    for (const [key, value] of Object.entries(params)) {
+      if (value !== undefined && value !== null && value !== "") {
+        url.searchParams.set(key, String(value));
+      }
+    }
+  }
+
+  const headers = { Accept: "application/json" };
+  if (body !== undefined) headers["Content-Type"] = "application/json";
+
+  if (auth) {
+    const token = localStorage.getItem(TOKEN_KEY);
+    if (token) headers.Authorization = `Bearer ${token}`;
+  }
+
+  let response;
+  try {
+    response = await fetch(url, {
+      method,
+      headers,
+      body: body !== undefined ? JSON.stringify(body) : undefined,
+    });
+  } catch (err) {
+    throw new ApiError(0, {
+      status: 0,
+      message: "Network error — the server could not be reached. Check that the backend is running.",
+      timestamp: new Date().toISOString(),
+      path: url.pathname,
+    }, url.pathname);
+  }
+
+  // 204 No Content
+  if (response.status === 204) return null;
+
+  let payload = null;
+  const text = await response.text();
+  if (text) {
+    try { payload = JSON.parse(text); } catch (err) { payload = null; }
+  }
+
+  if (!response.ok) {
+    const normalized = {
+      status: response.status,
+      message: (payload && typeof payload.message === "string" && payload.message)
+        || STATUS_TEXT[response.status]
+        || `Request failed (${response.status})`,
+      timestamp: (payload && payload.timestamp) || new Date().toISOString(),
+      path: (payload && payload.path) || url.pathname,
+    };
+    // Merge any extra fields the backend included (e.g. fieldErrors).
+    if (payload && typeof payload === "object") {
+      for (const [k, v] of Object.entries(payload)) {
+        if (!(k in normalized)) normalized[k] = v;
+      }
+    }
+    if (response.status === 401 && auth) {
+      const rel = window.location.pathname.replace(/^\//, "") || "index.html";
+      redirectToLogin(rel);
+    }
+    throw new ApiError(response.status, normalized, url.pathname);
+  }
+
+  return payload;
+}
+
+/** Human-readable message from any thrown value. */
+export function errorMessage(err, fallback = "Something went wrong. Please try again.") {
+  if (err instanceof ApiError) return err.messageText || fallback;
+  if (err && err.message) return err.message;
+  return fallback;
+}

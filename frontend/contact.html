@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contact — Apex Innovators</title>
+  <meta name="description" content="Contact Apex Innovators, the student developer team at Parul Institute of Engineering and Technology — collaborations, questions and feedback welcome.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Contact — Apex Innovators">
+  <meta property="og:description" content="Send the team a message — collaborations, questions and feedback welcome.">
+  <meta name="theme-color" content="#0a0f1a">
+  <link rel="icon" href="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%2322d3ee'/%3E%3Cpath d='M13 2 3 14h9l-1 8 10-12h-9l1-8z' fill='%23050a14'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body id="top">
+  <header id="nav-root" data-active="contact"></header>
+
+  <main id="main-content">
+    <section class="page-hero">
+      <div class="container">
+        <span class="eyebrow">Contact</span>
+        <h1>Talk to the team</h1>
+        <p class="page-sub">Faculty collaborations, hackathon sponsorships, club partnerships or a simple hello — your message lands straight in the team's inbox.</p>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top:2rem;">
+      <div class="container container-narrow">
+        <div class="split" style="grid-template-columns:1fr;align-items:start;">
+          <div>
+            <div id="contact-alert" style="margin-bottom:1.25rem;"></div>
+            <form id="contact-form" class="card card-pad form" novalidate>
+              <div class="form-grid">
+                <div class="field">
+                  <label for="name">Your name <span class="req">*</span></label>
+                  <input class="input" id="name" name="name" type="text" maxlength="120" placeholder="e.g. Priya Shah" required autocomplete="name">
+                </div>
+                <div class="field">
+                  <label for="email">Email <span class="req">*</span></label>
+                  <input class="input" id="email" name="email" type="email" maxlength="190" placeholder="you@example.com" required autocomplete="email">
+                </div>
+              </div>
+              <div class="field">
+                <label for="subject">Subject</label>
+                <input class="input" id="subject" name="subject" type="text" maxlength="190" placeholder="What is this about?" autocomplete="off">
+              </div>
+              <div class="field">
+                <label for="message">Message <span class="req">*</span></label>
+                <textarea class="input" id="message" name="message" rows="6" maxlength="5000" placeholder="Tell us about your idea, partnership or question…" required></textarea>
+              </div>
+              <div class="form-actions">
+                <p class="faint" style="font-size:0.82rem;">We usually reply within a few days. Your details are only used to respond.</p>
+                <span class="spacer"></span>
+                <button class="btn btn-primary" type="submit">
+                  <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+                  Send message
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <aside style="display:grid;gap:1rem;">
+            <div class="card side-card">
+              <h3>Why contact us?</h3>
+              <ul class="prose" style="font-size:0.9rem;gap:0.55rem;">
+                <li>Propose a collaboration or guest session</li>
+                <li>Invite the team to a hackathon or event</li>
+                <li>Share feedback on the platform</li>
+                <li>Recruit members for your campus initiative</li>
+              </ul>
+            </div>
+            <div class="card side-card">
+              <h3>Faster channels</h3>
+              <p class="muted" style="font-size:0.9rem;">For community discussions, posting publicly gets you answers from the whole team, not just one inbox.</p>
+              <div class="link-row" style="margin-top:0.6rem;">
+                <a class="btn btn-outline btn-sm" href="community.html">Visit the community</a>
+                <a class="btn btn-outline btn-sm" href="about.html">About the team</a>
+              </div>
+            </div>
+            <div class="card side-card">
+              <h3>Who reads this?</h3>
+              <p class="muted" style="font-size:0.9rem;">Messages go to the Apex Innovators admin inbox at Parul Institute of Engineering and Technology and are read by the team's core members.</p>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer id="footer-root"></footer>
+
+  <script type="module" src="js/components.js"></script>
+  <script type="module" src="js/contact.js"></script>
+</body>
+</html>

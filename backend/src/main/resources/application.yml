@@ -1,0 +1,45 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: apex-innovators
+
+  datasource:
+    # Dev defaults; override with DB_URL / DB_USER / DB_PASSWORD env vars.
+    # Schema is applied externally from database/schema.sql (+ seed.sql) — see backend/README.md.
+    url: "${DB_URL:jdbc:mysql://localhost:3306/apex_innovators?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true}"
+    username: ${DB_USER:root}
+    password: ${DB_PASSWORD:}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+
+  jpa:
+    hibernate:
+      ddl-auto: none        # schema owned by database/schema.sql
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+
+app:
+  jwt:
+    # Override in production with JWT_SECRET env var (must be >= 32 bytes for HS256).
+    # Dev fallback is documented and MUST be changed outside local development.
+    secret: ${JWT_SECRET:apex-dev-secret-change-me-before-production-0123456789abcdef}
+    access-expiry-ms: 900000        # 15 minutes
+    refresh-expiry-ms: 604800000    # 7 days
+  cors:
+    allowed-origins:
+      - http://localhost:5500
+      - http://127.0.0.1:5500
+      - http://localhost:8080
