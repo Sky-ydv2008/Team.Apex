@@ -8,7 +8,7 @@
 --     profiles (and the real hackathon program name/organizer) via the
 --     admin dashboard before launch — this repository must not ship
 --     fabricated personal data.
---   * Passwords: Admin@123 / Core@123 / Member@123 (BCrypt hashes).
+--   * Passwords: Apex@2000 / Core@123 / Member@123 (BCrypt hashes).
 --     Change them after first login.
 -- =====================================================================
 
@@ -18,7 +18,7 @@ USE apex_innovators;
 -- Users (demo role accounts)
 -- ---------------------------------------------------------------------
 INSERT INTO users (id, name, email, password_hash, role, status) VALUES
-  (1, 'Apex Admin',    'admin@apexinnovators.dev',  '$2b$10$nEeaAUq//2hJH/JKwBLAR.nINzULUMyG81adAAVkwZjimnws1dsm.', 'ADMIN',       'ACTIVE'),
+  (1, 'Apex Admin',    'apex.innovator.team@gmail.com',  '$2b$10$kRInQScjDcnnt4n/h3pMH.U76AbnptjfL0rVAQslXMyJZ9qLpy6pO', 'ADMIN',       'ACTIVE'),
   (2, 'Core Builder',  'core@apexinnovators.dev',   '$2b$10$S1BNGvaRonwxarbN66zIjuX9g.YkFNppQ0MRUZenaGFdSJQ3d3DTm', 'CORE_MEMBER', 'ACTIVE'),
   (3, 'Demo Member',   'member@apexinnovators.dev', '$2b$10$C1ShMEbgPxOHFAZ9IngGi.M03rDORRKxgAk7q7khRJoi.wfJFbQgW', 'MEMBER',      'ACTIVE');
 

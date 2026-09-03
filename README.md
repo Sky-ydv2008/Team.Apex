@@ -11,8 +11,8 @@ API is present (GitHub Pages / `file://` / `?demo=1`).
 **Full app on Render (accounts + admin, one-click):** this repo ships a `render.yaml`
 blueprint and `backend/Dockerfile` (frontend and API in one image, linked Postgres,
 demo content seeded on first boot). Deploy at https://render.com → **New+ → Blueprint** →
-connect this repository → **Apply**. Default login after deploy: `admin@apexinnovators.dev`
-/ `Admin@123` (see `database/seed.sql`; change it in the admin panel afterwards).
+connect this repository → **Apply**. Default login after deploy: `apex.innovator.team@gmail.com`
+/ `Apex@2000` (see `database/seed.sql`; change it in the admin panel afterwards).
 
 Built from the full implementation plan (see `docs/architecture.md`) as an MVP:
 
@@ -67,7 +67,7 @@ mvn spring-boot:run -Dspring-boot.run.profiles=smoke
 
 | Role         | Email                     | Password    |
 |--------------|---------------------------|-------------|
-| Admin        | admin@apexinnovators.dev  | `Admin@123` |
+| Admin        | apex.innovator.team@gmail.com | `Apex@2000` |
 | Core member  | core@apexinnovators.dev   | `Core@123`  |
 | Member       | member@apexinnovators.dev | `Member@123`|
 

@@ -59,7 +59,7 @@ CORS is enabled for local development origins (default
 `database/seed.sql` seeds the admin account
 
 ```
-admin@apexinnovators.dev
+apex.innovator.team@gmail.com
 ```
 
 with the development password documented in that file (BCrypt-hashed).
