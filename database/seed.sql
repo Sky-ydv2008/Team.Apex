@@ -3,11 +3,8 @@
 --   mysql -u <user> -p apex_innovators < database/seed.sql
 --
 -- DEMO CONTENT NOTICE
---   * Accounts below are development/demo identities used to exercise
---     ADMIN / CORE_MEMBER / MEMBER roles. Replace them with real team
---     profiles (and the real hackathon program name/organizer) via the
---     admin dashboard before launch — this repository must not ship
---     fabricated personal data.
+--   * Accounts below seed the real team roster — update personal bios, links
+--     and the hackathon program name/organizer via the admin dashboard.
 --   * Passwords: Apex@2000 / Core@123 / Member@123 (BCrypt hashes).
 --     Change them after first login.
 -- =====================================================================
@@ -18,16 +15,17 @@ USE apex_innovators;
 -- Users (demo role accounts)
 -- ---------------------------------------------------------------------
 INSERT INTO users (id, name, email, password_hash, role, status) VALUES
-  (1, 'Apex Admin',    'apex.innovator.team@gmail.com',  '$2b$10$kRInQScjDcnnt4n/h3pMH.U76AbnptjfL0rVAQslXMyJZ9qLpy6pO', 'ADMIN',       'ACTIVE'),
-  (2, 'Core Builder',  'core@apexinnovators.dev',   '$2b$10$S1BNGvaRonwxarbN66zIjuX9g.YkFNppQ0MRUZenaGFdSJQ3d3DTm', 'CORE_MEMBER', 'ACTIVE'),
-  (3, 'Demo Member',   'member@apexinnovators.dev', '$2b$10$C1ShMEbgPxOHFAZ9IngGi.M03rDORRKxgAk7q7khRJoi.wfJFbQgW', 'MEMBER',      'ACTIVE');
+  (1, 'Shivam Yadav',   'apex.innovator.team@gmail.com',  '$2b$10$kRInQScjDcnnt4n/h3pMH.U76AbnptjfL0rVAQslXMyJZ9qLpy6pO', 'ADMIN',       'ACTIVE'),
+  (2, 'Lipsarani Bisoyi','core@apexinnovators.dev',   '$2b$10$S1BNGvaRonwxarbN66zIjuX9g.YkFNppQ0MRUZenaGFdSJQ3d3DTm', 'CORE_MEMBER', 'ACTIVE'),
+  (3, 'Aryan Gupta',    'member@apexinnovators.dev', '$2b$10$C1ShMEbgPxOHFAZ9IngGi.M03rDORRKxgAk7q7khRJoi.wfJFbQgW', 'CORE_MEMBER', 'ACTIVE');
 
 INSERT INTO profiles (user_id, bio, headline, github, linkedin) VALUES
-  (1, 'Administrator of the Apex Innovators platform. Replace this demo profile with a real team member via the admin dashboard.',
-   'Platform Administrator', NULL, NULL),
-  (2, 'Core builder on the Apex Innovators team — hackathon developer. Replace this demo profile with a real team member via the admin dashboard.',
-   'Core Team · Developer', NULL, NULL),
-  (3, 'Demo community member account used for role testing.', 'Community Member', NULL, NULL);
+  (1, 'Java backend developer on Apex Innovators — Spring Boot, REST APIs, JWT security and the platform core.',
+   'Java Backend Developer', NULL, NULL),
+  (2, 'Frontend developer on Apex Innovators — crafting the interfaces, design system and user experience.',
+   'Frontend Developer', NULL, NULL),
+  (3, 'Full stack developer on Apex Innovators — backend to browser, from database to deployed product.',
+   'Full Stack Developer', NULL, NULL);
 
 -- ---------------------------------------------------------------------
 -- Technology catalog
@@ -63,8 +61,8 @@ VALUES
    'https://github.com/Sky-ydv2008/ai-powered-mini-erp', 'https://sky-ydv2008.github.io/Team.Apex/', NULL, 2026);
 
 INSERT INTO project_members (id, project_id, user_id, role, contribution) VALUES
-  (1, 1, 1, 'Product & Platform Lead', 'ERP module design, admin experience, integration'),
-  (2, 1, 2, 'Backend Developer',       'Spring Boot REST APIs, Spring Security + JWT, predictive inventory rules');
+  (1, 1, 1, 'Java Backend Developer',   'Spring Boot REST APIs, Spring Security + JWT, predictive inventory logic'),
+  (2, 1, 2, 'Frontend Developer',        'UI, design system and client-side integration');
 
 INSERT INTO project_technologies (project_id, technology_id) VALUES
   (1, 1), (1, 5), (1, 6), (1, 7), (1, 8), (1, 9), (1, 2), (1, 3), (1, 4), (1, 10), (1, 11), (1, 12);

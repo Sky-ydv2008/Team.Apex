@@ -69,12 +69,12 @@ public class SmokeDataSeeder implements CommandLineRunner {
         }
 
         // -- Accounts ---------------------------------------------------
-        User admin = user("Apex Admin", "apex.innovator.team@gmail.com", "Apex@2000", Role.ADMIN);
-        User core = user("Core Builder", "core@apexinnovators.dev", "Core@123", Role.CORE_MEMBER);
-        User member = user("Demo Member", "member@apexinnovators.dev", "Member@123", Role.MEMBER);
-        profile(admin, "Platform administrator (demo).", "Platform Administrator");
-        profile(core, "Hackathon developer on the IntelliERP build (demo).", "Core Team · Developer");
-        profile(member, "Community member (demo).", "Community Member");
+        User admin = user("Shivam Yadav", "apex.innovator.team@gmail.com", "Apex@2000", Role.ADMIN);
+        User core = user("Lipsarani Bisoyi", "core@apexinnovators.dev", "Core@123", Role.CORE_MEMBER);
+        User member = user("Aryan Gupta", "member@apexinnovators.dev", "Member@123", Role.CORE_MEMBER);
+        profile(admin, "Java backend developer on Apex Innovators — Spring Boot, REST APIs, JWT security and the platform core.", "Java Backend Developer");
+        profile(core, "Frontend developer on Apex Innovators — crafting the interfaces, design system and user experience.", "Frontend Developer");
+        profile(member, "Full stack developer on Apex Innovators — backend to browser, from database to deployed product.", "Full Stack Developer");
 
         // -- Technology catalog ------------------------------------------
         Technology java = tech("Java", "Language", "devicon-java");
@@ -112,8 +112,8 @@ public class SmokeDataSeeder implements CommandLineRunner {
         intellierp.setYear(2026);
         projectRepository.save(intellierp);
 
-        memberOf(intellierp, admin, "Product & Platform Lead", "ERP module design, admin experience, integration");
-        memberOf(intellierp, core, "Backend Developer", "Spring Boot REST APIs, Spring Security + JWT, predictive rules");
+        memberOf(intellierp, admin, "Java Backend Developer", "Spring Boot REST APIs, Spring Security + JWT, predictive inventory logic");
+        memberOf(intellierp, core, "Frontend Developer", "UI, design system and client-side integration");
         linkTech(intellierp, java, spring, sec, jwt, mysql, jpa, maven, js, html, css, rest, swagger);
 
         // -- Hackathon archive ---------------------------------------------

@@ -65,16 +65,15 @@ mvn spring-boot:run -Dspring-boot.run.profiles=smoke
 
 ### Default development accounts (from `database/seed.sql`)
 
-| Role         | Email                     | Password    |
-|--------------|---------------------------|-------------|
-| Admin        | apex.innovator.team@gmail.com | `Apex@2000` |
-| Core member  | core@apexinnovators.dev   | `Core@123`  |
-| Member       | member@apexinnovators.dev | `Member@123`|
+| Role                | Name              | Email                     | Password     |
+|---------------------|-------------------|---------------------------|--------------|
+| Admin               | Shivam Yadav      | apex.innovator.team@gmail.com | `Apex@2000` |
+| Core member         | Lipsarani Bisoyi  | core@apexinnovators.dev   | `Core@123`   |
+| Core member         | Aryan Gupta       | member@apexinnovators.dev | `Member@123` |
 
-> **Demo content notice** — the seeded users and profile copy are role-placeholders for
-> development. Replace them with the real team's profiles (and the real hackathon program
-> name/certificates) through the admin dashboard before launch. Change all passwords on
-> first login.
+> The seeded accounts carry the team roster above with role-based bios; finish the
+> personal details (photos, links, richer bios) and the hackathon program
+> name/certificates through the admin dashboard, and change all passwords on first login.
 
 ## Feature map (implementation plan §24 MVP)
 

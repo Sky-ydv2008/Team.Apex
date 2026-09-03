@@ -42,8 +42,8 @@ const T = {
       { id: 11, name: "Swagger / OpenAPI", category: "Docs", icon: "file-code" },
     ],
     members: [
-      { userId: 1, name: "Apex Admin", role: "Product & Platform Lead", contribution: "ERP module design, admin experience, integration" },
-      { userId: 2, name: "Core Builder", role: "Backend Developer", contribution: "Spring Boot REST APIs, Spring Security + JWT, predictive inventory rules" },
+      { userId: 1, name: "Shivam Yadav", role: "Java Backend Developer", contribution: "Spring Boot REST APIs, Spring Security + JWT, predictive inventory logic" },
+      { userId: 2, name: "Lipsarani Bisoyi", role: "Frontend Developer", contribution: "UI, design system and client-side integration" },
     ],
     hackathons: [{ id: 1, name: "Build With 2.0" }],
     createdAt: "2026-09-01T09:00:00",
@@ -66,7 +66,7 @@ const T = {
       { id: 2, name: "JavaScript", category: "Language", icon: "devicon-javascript" },
       { id: 10, name: "REST APIs", category: "Integration", icon: "server" },
     ],
-    members: [{ userId: 3, name: "Demo Member", role: "Builder", contribution: "Bot logic and deployment" }],
+    members: [{ userId: 3, name: "Aryan Gupta", role: "Full Stack Developer", contribution: "Bot logic, integrations and deployment" }],
     hackathons: [],
     createdAt: "2026-09-02T14:00:00",
   },
@@ -85,22 +85,23 @@ const HACKATHON = {
   certificateUrl: null,
   presentationUrl: null,
   members: [
-    { userId: 1, name: "Apex Admin" },
-    { userId: 2, name: "Core Builder" },
+    { userId: 1, name: "Shivam Yadav" },
+    { userId: 2, name: "Lipsarani Bisoyi" },
+    { userId: 3, name: "Aryan Gupta" },
   ],
   projects: [{ id: 1, title: "IntelliERP", slug: "intellierp" }],
   createdAt: "2026-09-01T08:00:00",
 };
 
 const TEAM = [
-  { id: 1, name: "Apex Admin", role: "ADMIN", headline: "Platform Administrator", bio: "Administrator of the Apex Innovators platform (demo profile).", photoUrl: null, github: null, linkedin: null },
-  { id: 2, name: "Core Builder", role: "CORE_MEMBER", headline: "Core Team · Developer", bio: "Hackathon developer on the IntelliERP build (demo profile).", photoUrl: null, github: null, linkedin: null },
-  { id: 3, name: "Demo Member", role: "MEMBER", headline: "Community Member", bio: "Demo community account (demo profile).", photoUrl: null, github: null, linkedin: null },
+  { id: 1, name: "Shivam Yadav", role: "ADMIN", headline: "Java Backend Developer", bio: "Java backend developer on Apex Innovators — Spring Boot, REST APIs, JWT security and the platform core.", photoUrl: null, github: "Sky-ydv2008", linkedin: null },
+  { id: 2, name: "Lipsarani Bisoyi", role: "CORE_MEMBER", headline: "Frontend Developer", bio: "Frontend developer on Apex Innovators — crafting the interfaces, design system and user experience.", photoUrl: null, github: null, linkedin: null },
+  { id: 3, name: "Aryan Gupta", role: "CORE_MEMBER", headline: "Full Stack Developer", bio: "Full stack developer on Apex Innovators — backend to browser, from database to deployed product.", photoUrl: null, github: null, linkedin: null },
 ];
 
 const ACHIEVEMENTS = [
   {
-    id: 1, userId: 2, userName: "Core Builder", title: "Build With 2.0 — IntelliERP", type: "CERTIFICATE",
+    id: 1, userId: 1, userName: "Shivam Yadav", title: "Build With 2.0 — IntelliERP", type: "CERTIFICATE",
     issuer: "Build With 2.0 organizers", awardDate: "2026-09-01",
     description: "Certified participation for the AI-Powered ERP & Business Intelligence problem statement.", verifyUrl: null,
   },
@@ -124,12 +125,12 @@ const TECHNOLOGIES = [
 
 const POSTS = [
   {
-    id: 1, authorId: 2, authorName: "Core Builder", type: "ANNOUNCEMENT", title: "IntelliERP is live on the showcase",
+    id: 1, authorId: 1, authorName: "Shivam Yadav", type: "ANNOUNCEMENT", title: "IntelliERP is live on the showcase",
     body: "Our Build With 2.0 project is now published — full problem statement, solution walkthrough and build story on the project page. Feedback welcome in the comments.",
     status: "PUBLISHED", createdAt: "2026-09-02T10:00:00", commentCount: 2, likeCount: 4, likedByMe: false,
   },
   {
-    id: 2, authorId: 3, authorName: "Demo Member", type: "DISCUSSION", title: "How do you structure a 48-hour build?",
+    id: 2, authorId: 3, authorName: "Aryan Gupta", type: "DISCUSSION", title: "How do you structure a 48-hour build?",
     body: "Splitting work across a hackathon weekend is half the battle — what works for your team?",
     status: "PUBLISHED", createdAt: "2026-09-02T18:30:00", commentCount: 1, likeCount: 2, likedByMe: false,
   },
@@ -137,11 +138,11 @@ const POSTS = [
 
 const COMMENTS = {
   1: [
-    { id: 1, authorId: 1, authorName: "Apex Admin", body: "Great write-up — the stockout logic is a clever touch.", createdAt: "2026-09-02T11:00:00" },
-    { id: 2, authorId: 3, authorName: "Demo Member", body: "Would love to see the dashboard screenshots soon.", createdAt: "2026-09-02T12:15:00" },
+    { id: 1, authorId: 2, authorName: "Lipsarani Bisoyi", body: "Great write-up — the stockout logic is a clever touch.", createdAt: "2026-09-02T11:00:00" },
+    { id: 2, authorId: 3, authorName: "Aryan Gupta", body: "Would love to see the dashboard screenshots soon.", createdAt: "2026-09-02T12:15:00" },
   ],
   2: [
-    { id: 3, authorId: 2, authorName: "Core Builder", body: "Plan the DB schema first, then split features by module.", createdAt: "2026-09-02T19:00:00" },
+    { id: 3, authorId: 1, authorName: "Shivam Yadav", body: "Plan the DB schema first, then split features by module.", createdAt: "2026-09-02T19:00:00" },
   ],
 };
 
