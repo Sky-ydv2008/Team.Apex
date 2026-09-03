@@ -16,6 +16,7 @@ import com.apexinnovators.dto.UserDto;
 import com.apexinnovators.entity.AuditLog;
 import com.apexinnovators.entity.ContactMessage;
 import com.apexinnovators.entity.MessageStatus;
+import com.apexinnovators.entity.Post;
 import com.apexinnovators.entity.Profile;
 import com.apexinnovators.entity.ProjectStatus;
 import com.apexinnovators.entity.Role;
@@ -23,11 +24,19 @@ import com.apexinnovators.entity.Technology;
 import com.apexinnovators.entity.User;
 import com.apexinnovators.entity.UserStatus;
 import com.apexinnovators.exception.ApiException;
+import com.apexinnovators.repository.AchievementRepository;
 import com.apexinnovators.repository.AuditLogRepository;
+import com.apexinnovators.repository.BookmarkRepository;
+import com.apexinnovators.repository.CommentRepository;
 import com.apexinnovators.repository.ContactMessageRepository;
+import com.apexinnovators.repository.EventRegistrationRepository;
 import com.apexinnovators.repository.HackathonRepository;
+import com.apexinnovators.repository.HackathonMemberRepository;
+import com.apexinnovators.repository.NotificationRepository;
+import com.apexinnovators.repository.PostLikeRepository;
 import com.apexinnovators.repository.PostRepository;
 import com.apexinnovators.repository.ProfileRepository;
+import com.apexinnovators.repository.ProjectMemberRepository;
 import com.apexinnovators.repository.ProjectRepository;
 import com.apexinnovators.repository.TechnologyRepository;
 import com.apexinnovators.repository.UserRepository;
@@ -63,6 +72,14 @@ public class AdminService {
     private final ProjectRepository projectRepository;
     private final HackathonRepository hackathonRepository;
     private final PostRepository postRepository;
+    private final CommentRepository commentRepository;
+    private final PostLikeRepository postLikeRepository;
+    private final ProjectMemberRepository projectMemberRepository;
+    private final HackathonMemberRepository hackathonMemberRepository;
+    private final AchievementRepository achievementRepository;
+    private final BookmarkRepository bookmarkRepository;
+    private final NotificationRepository notificationRepository;
+    private final EventRegistrationRepository eventRegistrationRepository;
     private final ContactMessageRepository contactMessageRepository;
     private final TechnologyRepository technologyRepository;
     private final AuditLogRepository auditLogRepository;
@@ -228,6 +245,42 @@ public class AdminService {
         auditService.record(actor.getId(), "CREATE", "User", user.getId(),
                 "Created account '" + user.getEmail() + "' with role " + user.getRole());
         return new UserDto(user.getId(), user.getName(), user.getEmail(), user.getRole(), user.getStatus());
+    }
+
+    /** Permanently deletes an account and all of its content (mirrors the schema FK cascades). */
+    @Transactional
+    public void deleteUser(UserPrincipal actor, Long id) {
+        User user = requireUser(id);
+        if (actor.getId().equals(id)) {
+            throw new ApiException(HttpStatus.BAD_REQUEST, "You cannot delete your own account");
+        }
+        if (user.getRole() == Role.ADMIN && userRepository.countByRole(Role.ADMIN) <= 1) {
+            throw new ApiException(HttpStatus.BAD_REQUEST, "Cannot delete the last admin account");
+        }
+        String identity = user.getName() + " <" + user.getEmail() + "> (role " + user.getRole() + ")";
+        auditService.record(actor.getId(), "DELETE", "User", id,
+                "Deleted user #" + id + " " + identity + " by user #" + actor.getId());
+
+        // Content authored by this user: posts first (their threads), then direct references.
+        List<Post> authoredPosts = postRepository.findByAuthorId(id);
+        List<Long> postIds = authoredPosts.stream().map(Post::getId).toList();
+        if (!postIds.isEmpty()) {
+            commentRepository.deleteByPostIdIn(postIds);
+            postLikeRepository.deleteByPostIdIn(postIds);
+        }
+        commentRepository.deleteByAuthorId(id);
+        postLikeRepository.deleteByUserId(id);
+        postRepository.deleteByAuthorId(id);
+
+        projectMemberRepository.deleteByUserId(id);
+        hackathonMemberRepository.deleteByUserId(id);
+        achievementRepository.deleteByUserId(id);
+        bookmarkRepository.deleteByUserId(id);
+        notificationRepository.deleteByUserId(id);
+        eventRegistrationRepository.deleteByUserId(id);
+        profileRepository.deleteByUserId(id);
+
+        userRepository.delete(user);
     }
 
     // ------------------------------------------------------------------

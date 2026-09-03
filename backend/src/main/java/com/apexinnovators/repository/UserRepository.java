@@ -1,5 +1,6 @@
 package com.apexinnovators.repository;
 
+import com.apexinnovators.entity.Role;
 import com.apexinnovators.entity.User;
 import com.apexinnovators.entity.UserStatus;
 import java.util.List;
@@ -19,6 +20,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findAllByStatusOrderByCreatedAtAsc(UserStatus status);
 
     long countByStatus(UserStatus status);
+
+    long countByRole(Role role);
 
     @Query("""
             select u from User u

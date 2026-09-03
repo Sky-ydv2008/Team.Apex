@@ -7,4 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface HackathonMemberRepository extends JpaRepository<HackathonMember, Long> {
 
     List<HackathonMember> findByHackathonIdOrderByIdAsc(Long hackathonId);
+
+    void deleteByUserId(Long userId);
 }

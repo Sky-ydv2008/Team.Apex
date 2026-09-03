@@ -68,7 +68,9 @@ Send `Authorization: Bearer <token>`. Access token lives 15 min, refresh 7 days.
 | GET/POST/PUT/DELETE | `/hackathons[...]` | hackathon CRUD |
 | GET | `/users?q=&page=&size=` | member search |
 | GET | `/users/{id}` | user + profile detail |
-| PATCH | `/users/{id}` | `{role?, status?}` |
+| PATCH | `/users/{id}` | `{name?, email?, password?, role?, status?}` — any subset; email uniqueness enforced; audited |
+| DELETE | `/users/{id}` | permanently deletes the member + all their content (audited; self-delete and last-admin blocked) |
+| GET | `/users/{id}/audit` | change history for a user: actions they performed + actions targeting them |
 | GET | `/posts?status=&page=&size=` | all posts |
 | PATCH | `/posts/{id}/status` | `{status}` moderation |
 | GET/POST/PUT/DELETE | `/achievements[...]` | achievement CRUD |

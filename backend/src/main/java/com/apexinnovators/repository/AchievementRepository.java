@@ -8,4 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface AchievementRepository extends JpaRepository<Achievement, Long> {
 
     Page<Achievement> findAllByOrderByCreatedAtDesc(Pageable pageable);
+
+    void deleteByUserId(Long userId);
 }

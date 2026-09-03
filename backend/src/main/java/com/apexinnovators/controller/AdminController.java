@@ -196,6 +196,15 @@ public class AdminController {
         return adminService.patchUser(principal, id, request);
     }
 
+    @DeleteMapping("/users/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Permanently delete a user and all their content "
+            + "(posts, comments, likes, memberships, achievements, profile)")
+    public void deleteUser(@AuthenticationPrincipal UserPrincipal principal,
+                           @PathVariable Long id) {
+        adminService.deleteUser(principal, id);
+    }
+
     // ------------------------------------------------------------------
     // Posts (moderation)
     // ------------------------------------------------------------------

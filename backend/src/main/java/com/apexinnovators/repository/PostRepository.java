@@ -32,4 +32,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> searchTop(@Param("statuses") List<ProjectStatus> statuses,
                          @Param("q") String q,
                          Pageable pageable);
+
+    List<Post> findByAuthorId(Long authorId);
+
+    void deleteByAuthorId(Long authorId);
 }

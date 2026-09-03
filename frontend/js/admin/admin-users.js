@@ -8,12 +8,13 @@ import { apiFetch, errorMessage } from "../api.js";
 import { guardAdmin } from "../auth.js";
 import {
   icon, esc, avatar, initials, humanize, roleBadge, statusBadge, injectAdminShell,
-  openDialog, closeDialog, toast, renderPagination, pageInfo,
+  openDialog, closeDialog, confirmDialog, toast, renderPagination, pageInfo,
 } from "../components.js";
 
 const SIZE = 20;
 const state = { page: 0, q: "" };
 const cache = new Map();
+let currentUserId = null;
 
 const tbody = document.getElementById("table-body");
 const pagerEl = document.getElementById("table-pager");
@@ -60,6 +61,9 @@ function render(items) {
       <td><div class="row-actions">
         <button class="btn btn-sm btn-outline" type="button" data-view data-id="${u.id}">${icon("eye")} View</button>
         <button class="btn btn-sm btn-outline" type="button" data-edit data-id="${u.id}">${icon("edit")} Edit</button>
+        ${u.id !== currentUserId
+          ? `<button class="btn btn-sm btn-warn-soft" type="button" data-del data-id="${u.id}" title="Permanently delete this member and all their content">${icon("trash")} Delete</button>`
+          : ""}
       </div></td>
     </tr>`).join("");
 }
@@ -280,14 +284,40 @@ function wireEvents() {
       if (editBtn) {
         const u = cache.get(String(editBtn.dataset.id));
         if (u) openEdit(u);
+        return;
+      }
+      const delBtn = e.target.closest("[data-del]");
+      if (delBtn) {
+        const u = cache.get(String(delBtn.dataset.id));
+        if (u) deleteUser(u);
       }
     });
+  }
+}
+
+/* ---------- Delete member ---------- */
+async function deleteUser(u) {
+  const confirmed = await confirmDialog({
+    title: `Delete ${u.name || "this member"}?`,
+    message: `This permanently deletes the account${u.email ? ` (${u.email})` : ""} and ALL of their content — posts, comments, likes, project/hackathon memberships, achievements and profile. This cannot be undone. Suspending is the non-destructive alternative.`,
+    confirmLabel: "Delete permanently",
+    tone: "danger",
+  });
+  if (!confirmed) return;
+  try {
+    await apiFetch(`/admin/users/${u.id}`, { method: "DELETE", auth: true });
+    cache.delete(String(u.id));
+    toast(`Deleted ${u.name || "member"} — change logged`, "success");
+    load();
+  } catch (err) {
+    toast(errorMessage(err, "Could not delete the user."), "error");
   }
 }
 
 async function boot() {
   const user = await guardAdmin();
   if (!user) return;
+  currentUserId = user.id;
   injectAdminShell("users", user);
   wireEvents();
   load();
