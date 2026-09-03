@@ -1,0 +1,43 @@
+# Render blueprint — one-click deploy of the Apex Innovators platform.
+# Apply: render.com → New+ → Blueprint → connect this GitHub repo → Apply.
+# Produces: free web service (frontend + Spring Boot API, single origin) and a
+# free Postgres database. First boot seeds demo content (see SmokeDataSeeder).
+databases:
+  - name: apex-innovators-db
+    plan: free
+    databaseName: apex_innovators
+    user: apex
+
+services:
+  - type: web
+    name: apex-innovators
+    runtime: docker
+    repo: https://github.com/Sky-ydv2008/Team.Apex
+    plan: free
+    dockerfilePath: ./backend/Dockerfile
+    healthCheckPath: /api/public/stats
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: render
+      - key: JWT_SECRET
+        generateValue: true
+      - key: PGHOST
+        fromDatabase:
+          name: apex-innovators-db
+          property: host
+      - key: PGPORT
+        fromDatabase:
+          name: apex-innovators-db
+          property: port
+      - key: PGDATABASE
+        fromDatabase:
+          name: apex-innovators-db
+          property: database
+      - key: PGUSER
+        fromDatabase:
+          name: apex-innovators-db
+          property: user
+      - key: PGPASSWORD
+        fromDatabase:
+          name: apex-innovators-db
+          property: password

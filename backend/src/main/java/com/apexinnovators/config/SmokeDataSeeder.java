@@ -43,7 +43,7 @@ import org.springframework.transaction.annotation.Transactional;
  * post and one contact message — enough to exercise every REST surface.
  */
 @Component
-@org.springframework.context.annotation.Profile("smoke")
+@org.springframework.context.annotation.Profile({"smoke", "render"})
 @RequiredArgsConstructor
 public class SmokeDataSeeder implements CommandLineRunner {
 

@@ -45,6 +45,11 @@
       <artifactId>mysql-connector-j</artifactId>
       <scope>runtime</scope>
     </dependency>
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <scope>runtime</scope>
+    </dependency>
     <!-- H2 (MySQL mode) for the "smoke" profile: run the API locally without MySQL -->
     <dependency>
       <groupId>com.h2database</groupId>

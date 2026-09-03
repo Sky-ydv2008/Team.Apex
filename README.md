@@ -8,6 +8,12 @@ hackathon archive and community feed can be viewed anywhere. Accounts, posting a
 admin panel require the full stack below. The frontend auto-switches to demo mode when no
 API is present (GitHub Pages / `file://` / `?demo=1`).
 
+**Full app on Render (accounts + admin, one-click):** this repo ships a `render.yaml`
+blueprint and `backend/Dockerfile` (frontend and API in one image, linked Postgres,
+demo content seeded on first boot). Deploy at https://render.com → **New+ → Blueprint** →
+connect this repository → **Apply**. Default login after deploy: `admin@apexinnovators.dev`
+/ `Admin@123` (see `database/seed.sql`; change it in the admin panel afterwards).
+
 Built from the full implementation plan (see `docs/architecture.md`) as an MVP:
 
 - **Public website** — Home, Projects, Project Details, Hackathons, Hackathon Details, Team, Achievements, Community feed, Events, Resources, Contact.

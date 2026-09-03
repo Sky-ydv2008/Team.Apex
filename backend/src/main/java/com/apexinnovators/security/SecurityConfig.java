@@ -40,6 +40,16 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/refresh").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/contact").permitAll()
+                        .requestMatchers(HttpMethod.GET,
+                                "/",
+                                "/index.html",
+                                "/*.html",
+                                "/admin/*.html",
+                                "/css/**",
+                                "/js/**",
+                                "/images/**",
+                                "/favicon*"
+                        ).permitAll()
                         .requestMatchers(
                                 HttpMethod.GET,
                                 "/api/projects/**",
