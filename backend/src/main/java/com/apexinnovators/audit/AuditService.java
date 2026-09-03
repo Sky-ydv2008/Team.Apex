@@ -2,6 +2,7 @@ package com.apexinnovators.audit;
 
 import com.apexinnovators.entity.AuditLog;
 import com.apexinnovators.repository.AuditLogRepository;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +25,7 @@ public class AuditService {
         logEntry.setEntity(entity);
         logEntry.setEntityId(entityId);
         logEntry.setDetail(detail);
+        logEntry.setCreatedAt(LocalDateTime.now());
         auditLogRepository.save(logEntry);
     }
 }

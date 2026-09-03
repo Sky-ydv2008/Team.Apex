@@ -1,5 +1,6 @@
 package com.apexinnovators.controller;
 
+import com.apexinnovators.dto.AdminActivityDto;
 import com.apexinnovators.dto.AdminCreatePostRequest;
 import com.apexinnovators.dto.AdminCreateUserRequest;
 import com.apexinnovators.dto.AdminMessageDto;
@@ -179,8 +180,16 @@ public class AdminController {
         return adminService.getUser(id);
     }
 
+    @GetMapping("/users/{id}/audit")
+    @Operation(summary = "Change history for a user: actions they performed plus actions targeting them")
+    public PageResponse<AdminActivityDto> getUserAudit(@PathVariable Long id,
+                                                       @RequestParam(required = false) Integer page,
+                                                       @RequestParam(required = false) Integer size) {
+        return adminService.userAudit(id, page, size);
+    }
+
     @PatchMapping("/users/{id}")
-    @Operation(summary = "Change a user's role and/or status")
+    @Operation(summary = "Update name/email/password/role/status of a user (any subset)")
     public UserDto patchUser(@AuthenticationPrincipal UserPrincipal principal,
                              @PathVariable Long id,
                              @Valid @RequestBody AdminUserPatchRequest request) {

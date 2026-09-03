@@ -87,6 +87,8 @@ public class ProjectService {
         member.setProjectId(project.getId());
         member.setUserId(actor.getId());
         projectMemberRepository.save(member);
+        auditService.record(actor.getId(), "CREATE", "Project", project.getId(),
+                "Created project '" + project.getTitle() + "' as draft (user #" + actor.getId() + ")");
         return projectAssembler.toDto(project);
     }
 
@@ -96,6 +98,8 @@ public class ProjectService {
         requireManager(project, actor);
         applyContent(project, request);
         projectRepository.save(project);
+        auditService.record(actor.getId(), "UPDATE", "Project", project.getId(),
+                "Edited project '" + project.getTitle() + "' (user #" + actor.getId() + ")");
         return projectAssembler.toDto(project);
     }
 
@@ -110,6 +114,8 @@ public class ProjectService {
         }
         project.setStatus(ProjectStatus.PENDING_REVIEW);
         projectRepository.save(project);
+        auditService.record(actor.getId(), "SUBMIT", "Project", project.getId(),
+                "Submitted project '" + project.getTitle() + "' for review (user #" + actor.getId() + ")");
         return projectAssembler.toDto(project);
     }
 

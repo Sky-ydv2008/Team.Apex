@@ -16,6 +16,7 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import com.apexinnovators.audit.AuditService;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -28,6 +29,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final AuditService auditService;
 
     /** Public comment thread of a visible post, oldest first. */
     @Transactional(readOnly = true)
@@ -46,6 +48,8 @@ public class CommentService {
         comment.setAuthorId(actor.getId());
         comment.setBody(request.body().trim());
         commentRepository.save(comment);
+        auditService.record(actor.getId(), "CREATE", "Comment", comment.getId(),
+                "Commented on post #" + postId + " (user #" + actor.getId() + ")");
         return toDtos(List.of(comment)).get(0);
     }
 

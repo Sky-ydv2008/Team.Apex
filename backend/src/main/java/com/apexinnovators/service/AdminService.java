@@ -120,6 +120,36 @@ public class AdminService {
                 users.getTotalElements(), users.getTotalPages());
     }
 
+    /** Change history for a user: entries they caused plus entries targeting them. */
+    @Transactional(readOnly = true)
+    public PageResponse<AdminActivityDto> userAudit(Long id, Integer page, Integer size) {
+        requireUser(id);
+        Pageable pageable = PageUtil.of(page, size);
+        List<AuditLog> logs = auditLogRepository.findHistoryForUser(id, pageable);
+        List<Long> actorIds = logs.stream()
+                .map(AuditLog::getActorId)
+                .filter(java.util.Objects::nonNull)
+                .distinct()
+                .toList();
+        Map<Long, String> actorNames = new HashMap<>();
+        if (!actorIds.isEmpty()) {
+            userRepository.findAllById(actorIds)
+                    .forEach(u -> actorNames.put(u.getId(), u.getName()));
+        }
+        List<AdminActivityDto> content = logs.stream()
+                .map(log -> new AdminActivityDto(
+                        log.getActorId() == null ? "System" : actorNames.getOrDefault(log.getActorId(), "Unknown"),
+                        log.getAction(),
+                        log.getEntity(),
+                        log.getDetail(),
+                        log.getCreatedAt()))
+                .toList();
+        Page<AuditLog> paged = new org.springframework.data.domain.PageImpl<>(logs, pageable,
+                auditLogRepository.countHistoryForUser(id));
+        return new PageResponse<>(content, paged.getNumber(), paged.getSize(),
+                paged.getTotalElements(), paged.getTotalPages());
+    }
+
     @Transactional(readOnly = true)
     public AdminUserDetailDto getUser(Long id) {
         User user = requireUser(id);
@@ -134,11 +164,27 @@ public class AdminService {
 
     @Transactional
     public UserDto patchUser(UserPrincipal actor, Long id, AdminUserPatchRequest request) {
-        if (request.role() == null && request.status() == null) {
-            throw new ApiException(HttpStatus.BAD_REQUEST, "Provide at least one of role or status");
-        }
         User user = requireUser(id);
         List<String> changes = new ArrayList<>();
+
+        String newEmail = request.email() == null ? null : request.email().trim().toLowerCase();
+        if (request.name() != null && !request.name().trim().equalsIgnoreCase(user.getName())) {
+            String old = user.getName();
+            user.setName(request.name().trim());
+            changes.add("name '" + old + "' -> '" + user.getName() + "'");
+        }
+        if (newEmail != null && !newEmail.equals(user.getEmail())) {
+            if (userRepository.existsByEmail(newEmail)) {
+                throw new ApiException(HttpStatus.CONFLICT, "An account with that email already exists");
+            }
+            String old = user.getEmail();
+            user.setEmail(newEmail);
+            changes.add("email '" + old + "' -> '" + newEmail + "'");
+        }
+        if (request.password() != null && !request.password().isBlank()) {
+            user.setPasswordHash(passwordEncoder.encode(request.password()));
+            changes.add("password reset");
+        }
         if (request.role() != null && request.role() != user.getRole()) {
             changes.add("role " + user.getRole() + " -> " + request.role());
             user.setRole(request.role());
@@ -150,7 +196,8 @@ public class AdminService {
         if (!changes.isEmpty()) {
             userRepository.save(user);
             auditService.record(actor.getId(), "UPDATE", "User", user.getId(),
-                    String.join(", ", changes) + " for '" + user.getName() + "'");
+                    "by user #" + actor.getId() + ": " + String.join(", ", changes)
+                            + " for '" + user.getName() + "'");
         }
         return new UserDto(user.getId(), user.getName(), user.getEmail(), user.getRole(), user.getStatus());
     }

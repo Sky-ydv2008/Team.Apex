@@ -7,7 +7,7 @@
 import { apiFetch, errorMessage } from "../api.js";
 import { guardAdmin } from "../auth.js";
 import {
-  icon, esc, avatar, roleBadge, statusBadge, injectAdminShell,
+  icon, esc, avatar, initials, humanize, roleBadge, statusBadge, injectAdminShell,
   openDialog, closeDialog, toast, renderPagination, pageInfo,
 } from "../components.js";
 
@@ -126,6 +126,41 @@ async function openView(u) {
       </div>
     </div>`;
   openDialog(viewModal);
+  loadAuditHistory(detail.id, viewBody);
+}
+
+/* ---------- Change history (audit) ---------- */
+function auditRowHtml(a) {
+  const when = a.createdAt ? new Date(a.createdAt).toLocaleString(undefined, {
+    dateStyle: "short", timeStyle: "short",
+  }) : "—";
+  return `<div class="activity-item">
+    <span class="avatar avatar-round">${esc(initials(a.actor || "?"))}</span>
+    <div class="activity-body">
+      <div><b>${esc(a.actor || "System")}</b> ${esc(humanize(a.action || ""))} <span class="faint">· ${esc(a.entity || "")}</span></div>
+      <div>${esc(a.detail || "")}</div>
+      <div class="faint" style="font-size:0.78rem;">${when}</div>
+    </div>
+  </div>`;
+}
+
+async function loadAuditHistory(userId, host) {
+  if (!host) return;
+  const wrap = document.createElement("div");
+  wrap.className = "detail-block";
+  wrap.id = "audit-history-block";
+  wrap.innerHTML = `<h4>Change history</h4><div class="sk-list" aria-busy="true"><div class="sk sk-row w100"></div><div class="sk sk-row w100"></div></div>`;
+  host.appendChild(wrap);
+  try {
+    const data = await apiFetch(`/admin/users/${userId}/audit`, { auth: true, params: { page: 0, size: 20 } });
+    const items = (data && data.content) || [];
+    wrap.innerHTML = items.length
+      ? `<h4>Change history <span class="faint" style="font-weight:400;">(last ${items.length} of ${data.totalElements || items.length})</span></h4>
+         <div class="activity-list">${items.map(auditRowHtml).join("")}</div>`
+      : `<h4>Change history</h4><p class="muted">No changes logged for this user yet.</p>`;
+  } catch (err) {
+    wrap.innerHTML = `<h4>Change history</h4><p class="muted">Could not load the change history.</p>`;
+  }
 }
 
 /* ---------- Add member ---------- */
@@ -167,31 +202,51 @@ async function submitCreate(e) {
   }
 }
 
-/* ---------- Edit role / status ---------- */
+/* ---------- Edit user ---------- */
+const editError = document.getElementById("user-edit-error");
 function openEdit(u) {
   if (!editModal) return;
   editForm.reset();
   document.getElementById("u-id").value = u.id;
-  document.getElementById("u-name-label").textContent = u.name || "User";
+  document.getElementById("u-name").value = u.name || "";
+  document.getElementById("u-email").value = u.email || "";
+  document.getElementById("u-password").value = "";
   document.getElementById("u-role").value = u.role || "MEMBER";
   document.getElementById("u-status").value = u.status || "ACTIVE";
+  if (editError) { editError.textContent = ""; editError.hidden = true; }
   openDialog(editModal);
 }
 
 async function submitEdit(e) {
   e.preventDefault();
   const id = document.getElementById("u-id").value;
+  const name = document.getElementById("u-name").value.trim();
+  const email = document.getElementById("u-email").value.trim();
+  const password = document.getElementById("u-password").value;
   const role = document.getElementById("u-role").value;
   const status = document.getElementById("u-status").value;
+  // Send only the fields that actually changed; the backend audits every change.
+  const cached = cache.get(String(id)) || {};
+  const body = {};
+  if (name && name !== (cached.name || "")) body.name = name;
+  if (email && email !== (cached.email || "")) body.email = email;
+  if (password) body.password = password;
+  if (role !== (cached.role || "")) body.role = role;
+  if (status !== (cached.status || "")) body.status = status;
+  if (Object.keys(body).length === 0) { closeDialog(editModal); return; }
   const saveBtn = editForm.querySelector("button[type=submit]");
   saveBtn.disabled = true;
+  if (editError) { editError.textContent = ""; editError.hidden = true; }
   try {
-    await apiFetch(`/admin/users/${id}`, { method: "PATCH", body: { role, status }, auth: true });
-    toast("User updated", "success");
+    const updated = await apiFetch(`/admin/users/${id}`, { method: "PATCH", body, auth: true });
+    cache.set(String(id), { ...cached, ...updated });
+    toast("User updated — change logged", "success");
     closeDialog(editModal);
     load();
   } catch (err) {
-    toast(errorMessage(err, "Could not update the user."), "error");
+    const msg = errorMessage(err, "Could not update the user.");
+    if (editError) { editError.textContent = msg; editError.hidden = false; }
+    else toast(msg, "error");
   } finally {
     saveBtn.disabled = false;
   }

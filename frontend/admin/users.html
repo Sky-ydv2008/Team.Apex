@@ -97,7 +97,7 @@
           <div class="field">
             <label for="nu-password">Temporary password *</label>
             <input class="input" id="nu-password" name="password" type="password" required minlength="8" maxlength="72" autocomplete="new-password">
-            <p class="hint">Minimum 8 characters — the member can log in and change it later (change via /profile is a future feature; ask an admin to reset by editing).</p>
+            <p class="hint">Minimum 8 characters. They can later be changed by any admin via the Edit button on this page.</p>
           </div>
           <div class="field">
             <label for="nu-role">Role</label>
@@ -146,7 +146,18 @@
       </div>
       <form id="user-edit-form" class="modal-body form" novalidate>
         <input type="hidden" id="u-id" value="">
-        <p class="muted" id="u-name-label" style="font-size:0.95rem;font-weight:600;color:var(--text);"></p>
+        <div class="field">
+          <label for="u-name">Name</label>
+          <input class="input" id="u-name" maxlength="120" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="u-email">Login email</label>
+          <input class="input" id="u-email" type="email" maxlength="190" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="u-password">New password</label>
+          <input class="input" id="u-password" type="password" minlength="8" maxlength="72" autocomplete="new-password" placeholder="Leave blank to keep the current password">
+        </div>
         <div class="form-grid">
           <div class="field">
             <label for="u-role">Role</label>
@@ -164,7 +175,8 @@
             </select>
           </div>
         </div>
-        <p class="hint" style="font-size:0.8rem;color:var(--text-3);">Suspending a user blocks their access while keeping their content in the audit trail.</p>
+        <p class="hint" style="font-size:0.8rem;color:var(--text-3);">Every saved change (name, email, password, role, status) is recorded in the audit log with your user id. Leave password blank to keep it unchanged.</p>
+        <p class="form-error" id="user-edit-error" role="alert" hidden></p>
         <div class="modal-foot" style="padding-inline:0;border-top:none;padding-bottom:0;">
           <span class="spacer"></span>
           <button class="btn btn-ghost" type="button" data-dialog-close>Cancel</button>

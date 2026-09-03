@@ -82,6 +82,8 @@ public class PostService {
         post.setBody(request.body());
         post.setStatus(ProjectStatus.DRAFT);
         postRepository.save(post);
+        auditService.record(actor.getId(), "CREATE", "Post", post.getId(),
+                "Created post '" + post.getTitle() + "' as draft (user #" + actor.getId() + ")");
         return toDto(post, actor.getId());
     }
 
@@ -96,6 +98,8 @@ public class PostService {
         }
         post.setBody(request.body());
         postRepository.save(post);
+        auditService.record(actor.getId(), "UPDATE", "Post", post.getId(),
+                "Edited post '" + post.getTitle() + "' (user #" + actor.getId() + ")");
         return toDto(post, actor.getId());
     }
 
@@ -110,6 +114,8 @@ public class PostService {
         }
         post.setStatus(ProjectStatus.PENDING_REVIEW);
         postRepository.save(post);
+        auditService.record(actor.getId(), "SUBMIT", "Post", post.getId(),
+                "Submitted post '" + post.getTitle() + "' for review (user #" + actor.getId() + ")");
         return toDto(post, actor.getId());
     }
 
