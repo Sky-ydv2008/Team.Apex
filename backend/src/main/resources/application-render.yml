@@ -1,13 +1,13 @@
-# Render (production demo) profile — Postgres via linked Render DB, schema from JPA
-# (ddl-auto=update keeps the free demo self-maintaining; MySQL remains the
-# canonical production schema in database/schema.sql), demo content seeded on
-# first boot, and the static frontend served from the image (single origin).
+# Render profile — Postgres via the linked Render DB when available,
+# otherwise embedded H2 so the app always boots (accounts are seeded either
+# way; see SmokeDataSeeder). Schema is managed by JPA (ddl-auto=update);
+# MySQL remains the canonical production schema in database/schema.sql.
 spring:
   datasource:
-    url: ${JDBC_DATABASE_URL:jdbc:postgresql://${PGHOST:localhost}:${PGPORT:5432}/${PGDATABASE:apex_innovators}?sslmode=prefer}
-    username: ${PGUSER:apex}
-    password: ${PGPASSWORD:}
-    driver-class-name: org.postgresql.Driver
+    # JDBC_DATABASE_URL is set by the container entrypoint from Render's
+    # DATABASE_URL (postgres://… -> jdbc:postgresql://…). Without it, fall
+    # back to in-memory H2 so the service comes up no matter what.
+    url: ${JDBC_DATABASE_URL:jdbc:h2:mem:apex;DB_CLOSE_DELAY=-1}
     hikari:
       maximum-pool-size: 5
 

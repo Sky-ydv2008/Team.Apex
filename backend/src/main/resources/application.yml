@@ -8,10 +8,10 @@ spring:
   datasource:
     # Dev defaults; override with DB_URL / DB_USER / DB_PASSWORD env vars.
     # Schema is applied externally from database/schema.sql (+ seed.sql) — see backend/README.md.
+    # No driver-class-name: Spring picks the driver from the URL (MySQL / Postgres / H2).
     url: "${DB_URL:jdbc:mysql://localhost:3306/apex_innovators?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true}"
     username: ${DB_USER:root}
     password: ${DB_PASSWORD:}
-    driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       maximum-pool-size: 10
 
