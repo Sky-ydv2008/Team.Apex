@@ -2,6 +2,12 @@
 
 A living digital home for the **Apex Innovators** student developer team (Parul Institute of Engineering and Technology): a **portfolio + hackathon archive + project showcase + community platform** where every project tells a story — idea → research → build → hackathon → result → learnings.
 
+**Live preview (GitHub Pages, no backend):** https://sky-ydv2008.github.io/Team.Apex/ — the
+public site renders built-in sample data (see `frontend/js/demo-data.js`) so the portfolio,
+hackathon archive and community feed can be viewed anywhere. Accounts, posting and the
+admin panel require the full stack below. The frontend auto-switches to demo mode when no
+API is present (GitHub Pages / `file://` / `?demo=1`).
+
 Built from the full implementation plan (see `docs/architecture.md`) as an MVP:
 
 - **Public website** — Home, Projects, Project Details, Hackathons, Hackathon Details, Team, Achievements, Community feed, Events, Resources, Contact.
