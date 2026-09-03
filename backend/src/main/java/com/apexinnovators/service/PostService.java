@@ -1,6 +1,7 @@
 package com.apexinnovators.service;
 
 import com.apexinnovators.audit.AuditService;
+import com.apexinnovators.dto.AdminCreatePostRequest;
 import com.apexinnovators.dto.PageResponse;
 import com.apexinnovators.dto.PostDto;
 import com.apexinnovators.dto.PostRequest;
@@ -143,6 +144,21 @@ public class PostService {
         postRepository.save(post);
         auditService.record(actor.getId(), "STATUS_CHANGE", "Post", post.getId(),
                 "Status " + post.getStatus() + " for post '" + post.getTitle() + "'");
+        return toDto(post, null);
+    }
+
+    /** ADMIN creates a post directly; author is the acting admin, status defaults to PUBLISHED. */
+    @Transactional
+    public PostDto createAdmin(UserPrincipal actor, AdminCreatePostRequest request) {
+        Post post = new Post();
+        post.setAuthorId(actor.getId());
+        post.setType(request.type());
+        post.setTitle(request.title().trim());
+        post.setBody(request.body());
+        post.setStatus(request.status() == null ? ProjectStatus.PUBLISHED : request.status());
+        postRepository.save(post);
+        auditService.record(actor.getId(), "CREATE", "Post", post.getId(),
+                "Created post '" + post.getTitle() + "' as " + post.getStatus());
         return toDto(post, null);
     }
 

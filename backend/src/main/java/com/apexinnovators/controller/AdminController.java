@@ -1,5 +1,7 @@
 package com.apexinnovators.controller;
 
+import com.apexinnovators.dto.AdminCreatePostRequest;
+import com.apexinnovators.dto.AdminCreateUserRequest;
 import com.apexinnovators.dto.AdminMessageDto;
 import com.apexinnovators.dto.AdminOverviewDto;
 import com.apexinnovators.dto.AdminProjectRequest;
@@ -163,6 +165,14 @@ public class AdminController {
         return adminService.listUsers(q, page, size);
     }
 
+    @PostMapping("/users")
+    @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Create a member account with optional profile fields")
+    public UserDto createUser(@AuthenticationPrincipal UserPrincipal principal,
+                              @Valid @RequestBody AdminCreateUserRequest request) {
+        return adminService.createUser(principal, request);
+    }
+
     @GetMapping("/users/{id}")
     @Operation(summary = "User detail including profile fields")
     public AdminUserDetailDto getUser(@PathVariable Long id) {
@@ -187,6 +197,14 @@ public class AdminController {
                                            @RequestParam(required = false) Integer page,
                                            @RequestParam(required = false) Integer size) {
         return postService.pageAdmin(status, page, size);
+    }
+
+    @PostMapping("/posts")
+    @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Create a post as the acting admin (status defaults to PUBLISHED)")
+    public PostDto createPost(@AuthenticationPrincipal UserPrincipal principal,
+                              @Valid @RequestBody AdminCreatePostRequest request) {
+        return postService.createAdmin(principal, request);
     }
 
     @PatchMapping("/posts/{id}/status")

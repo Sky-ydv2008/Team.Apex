@@ -8,7 +8,7 @@ import { apiFetch, errorMessage } from "../api.js";
 import { guardAdmin } from "../auth.js";
 import {
   icon, esc, avatar, humanize, typeChip, statusBadge, timeAgo,
-  injectAdminShell, openDialog, toast, renderPagination, pageInfo,
+  injectAdminShell, openDialog, closeDialog, toast, renderPagination, pageInfo,
 } from "../components.js";
 
 const SIZE = 15;
@@ -20,6 +20,9 @@ const pagerEl = document.getElementById("table-pager");
 const infoEl = document.getElementById("list-info");
 const reviewModal = document.getElementById("post-review-modal");
 const reviewBody = document.getElementById("post-review-body");
+const createModal = document.getElementById("post-create-modal");
+const createForm = document.getElementById("post-create-form");
+const createError = document.getElementById("post-create-error");
 
 function rowSkeleton() {
   return `<tr><td colspan="7" style="padding:1rem;"><div class="sk-list">
@@ -118,10 +121,54 @@ async function applyStatus(id, status) {
   }
 }
 
+/* ---------- Create post (as admin) ---------- */
+function openCreate() {
+  if (!createForm) return;
+  createForm.reset();
+  if (createError) { createError.textContent = ""; createError.hidden = true; }
+  openDialog(createModal);
+}
+
+async function submitCreate(e) {
+  e.preventDefault();
+  const payload = {
+    type: document.getElementById("np-type").value,
+    status: document.getElementById("np-status").value,
+    title: document.getElementById("np-title").value.trim(),
+    body: document.getElementById("np-body").value.trim() || null,
+  };
+  if (!payload.title) {
+    if (createError) { createError.textContent = "Title is required."; createError.hidden = false; }
+    return;
+  }
+  const saveBtn = createForm.querySelector("button[type=submit]");
+  saveBtn.disabled = true;
+  if (createError) { createError.textContent = ""; createError.hidden = true; }
+  try {
+    const created = await apiFetch("/admin/posts", { method: "POST", body: payload, auth: true });
+    toast(`Post created (${humanize(created.status || "published").toLowerCase()})`, "success");
+    closeDialog(createModal);
+    state.page = 0;
+    load();
+  } catch (err) {
+    const msg = errorMessage(err, "Could not create the post.");
+    if (createError) { createError.textContent = msg; createError.hidden = false; }
+    else toast(msg, "error");
+  } finally {
+    saveBtn.disabled = false;
+  }
+}
+
 function wireEvents() {
   const statusSel = document.getElementById("filter-status");
   if (statusSel) {
     statusSel.addEventListener("change", () => { state.status = statusSel.value; state.page = 0; load(); });
+  }
+
+  const newBtn = document.getElementById("btn-new-post");
+  if (newBtn && createForm) {
+    newBtn.addEventListener("click", openCreate);
+    createForm.addEventListener("submit", submitCreate);
   }
 
   if (tbody) {

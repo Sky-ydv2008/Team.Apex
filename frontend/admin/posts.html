@@ -36,6 +36,9 @@
               </select>
               <span class="muted" style="font-size:0.86rem;">Open a post to read it in full and change its status.</span>
             </div>
+            <div class="toolbar-right">
+              <button class="btn btn-primary btn-sm" type="button" id="btn-new-post">New post</button>
+            </div>
           </div>
 
           <p class="results-meta" id="list-info" role="status"></p>
@@ -63,6 +66,57 @@
       </main>
     </div>
   </div>
+
+  <dialog id="post-create-modal" class="modal" aria-labelledby="post-create-title">
+    <div class="modal-box" style="max-width:640px;">
+      <div class="modal-head">
+        <h2 id="post-create-title">New community post</h2>
+        <button class="modal-close" type="button" data-dialog-close aria-label="Close">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <form id="post-create-form" class="modal-body form" novalidate>
+        <div class="form-grid">
+          <div class="field">
+            <label for="np-type">Type</label>
+            <select class="input" id="np-type">
+              <option value="ANNOUNCEMENT">Announcement</option>
+              <option value="DISCUSSION">Discussion</option>
+              <option value="PROJECT">Project</option>
+              <option value="ACHIEVEMENT">Achievement</option>
+              <option value="HACKATHON">Hackathon</option>
+              <option value="RESOURCE">Resource</option>
+              <option value="QUESTION">Question</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="np-status">Status</label>
+            <select class="input" id="np-status">
+              <option value="PUBLISHED">Published (visible now)</option>
+              <option value="APPROVED">Approved</option>
+              <option value="DRAFT">Draft</option>
+              <option value="PENDING_REVIEW">Pending review</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="np-title">Title *</label>
+          <input class="input" id="np-title" required maxlength="190">
+        </div>
+        <div class="field">
+          <label for="np-body">Body</label>
+          <textarea class="input" id="np-body" rows="6" maxlength="20000" placeholder="Write the post content…"></textarea>
+        </div>
+        <p class="hint">Posted as you (the admin). PUBLISHED posts appear immediately in the community feed.</p>
+        <p class="form-error" id="post-create-error" role="alert" hidden></p>
+        <div class="modal-foot" style="padding-inline:0;border-top:none;padding-bottom:0;">
+          <span class="spacer"></span>
+          <button class="btn btn-ghost" type="button" data-dialog-close>Cancel</button>
+          <button class="btn btn-primary" type="submit">Publish post</button>
+        </div>
+      </form>
+    </div>
+  </dialog>
 
   <dialog id="post-review-modal" class="modal" aria-labelledby="post-review-title">
     <div class="modal-box wide">

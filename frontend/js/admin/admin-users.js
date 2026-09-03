@@ -22,6 +22,9 @@ const viewModal = document.getElementById("user-view-modal");
 const viewBody = document.getElementById("user-view-body");
 const editModal = document.getElementById("user-edit-modal");
 const editForm = document.getElementById("user-edit-form");
+const createModal = document.getElementById("user-create-modal");
+const createForm = document.getElementById("user-create-form");
+const createError = document.getElementById("user-create-error");
 
 function rowSkeleton() {
   return `<tr><td colspan="5" style="padding:1rem;"><div class="sk-list">
@@ -125,6 +128,45 @@ async function openView(u) {
   openDialog(viewModal);
 }
 
+/* ---------- Add member ---------- */
+function openCreate() {
+  if (!createForm) return;
+  createForm.reset();
+  if (createError) { createError.textContent = ""; createError.hidden = true; }
+  openDialog(createModal);
+}
+
+async function submitCreate(e) {
+  e.preventDefault();
+  const val = (id) => document.getElementById(id)?.value.trim() || "";
+  const payload = {
+    name: val("nu-name"),
+    email: val("nu-email"),
+    password: document.getElementById("nu-password")?.value || "",
+    role: val("nu-role"),
+    headline: val("nu-headline") || null,
+    bio: val("nu-bio") || null,
+    github: val("nu-github") || null,
+    linkedin: val("nu-linkedin") || null,
+  };
+  const saveBtn = createForm.querySelector("button[type=submit]");
+  saveBtn.disabled = true;
+  if (createError) { createError.textContent = ""; createError.hidden = true; }
+  try {
+    await apiFetch("/admin/users", { method: "POST", body: payload, auth: true });
+    toast("Member added", "success");
+    closeDialog(createModal);
+    state.page = 0;
+    load();
+  } catch (err) {
+    const msg = errorMessage(err, "Could not add the member.");
+    if (createError) { createError.textContent = msg; createError.hidden = false; }
+    else toast(msg, "error");
+  } finally {
+    saveBtn.disabled = false;
+  }
+}
+
 /* ---------- Edit role / status ---------- */
 function openEdit(u) {
   if (!editModal) return;
@@ -165,6 +207,11 @@ function wireEvents() {
     });
   }
   if (editForm) editForm.addEventListener("submit", submitEdit);
+  const newBtn = document.getElementById("btn-new-user");
+  if (newBtn && createForm) {
+    newBtn.addEventListener("click", openCreate);
+    createForm.addEventListener("submit", submitCreate);
+  }
 
   if (tbody) {
     tbody.addEventListener("click", async (e) => {

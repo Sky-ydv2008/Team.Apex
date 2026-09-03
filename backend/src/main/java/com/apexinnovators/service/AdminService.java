@@ -2,6 +2,7 @@ package com.apexinnovators.service;
 
 import com.apexinnovators.audit.AuditService;
 import com.apexinnovators.dto.AdminActivityDto;
+import com.apexinnovators.dto.AdminCreateUserRequest;
 import com.apexinnovators.dto.AdminMessageDto;
 import com.apexinnovators.dto.AdminOverviewDto;
 import com.apexinnovators.dto.AdminUserDetailDto;
@@ -17,6 +18,7 @@ import com.apexinnovators.entity.ContactMessage;
 import com.apexinnovators.entity.MessageStatus;
 import com.apexinnovators.entity.Profile;
 import com.apexinnovators.entity.ProjectStatus;
+import com.apexinnovators.entity.Role;
 import com.apexinnovators.entity.Technology;
 import com.apexinnovators.entity.User;
 import com.apexinnovators.entity.UserStatus;
@@ -39,6 +41,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,6 +67,7 @@ public class AdminService {
     private final TechnologyRepository technologyRepository;
     private final AuditLogRepository auditLogRepository;
     private final AuditService auditService;
+    private final PasswordEncoder passwordEncoder;
 
     // ------------------------------------------------------------------
     // Overview
@@ -148,6 +152,34 @@ public class AdminService {
             auditService.record(actor.getId(), "UPDATE", "User", user.getId(),
                     String.join(", ", changes) + " for '" + user.getName() + "'");
         }
+        return new UserDto(user.getId(), user.getName(), user.getEmail(), user.getRole(), user.getStatus());
+    }
+
+    /** ADMIN creates a member account (role optional, default MEMBER) with an empty profile row. */
+    @Transactional
+    public UserDto createUser(UserPrincipal actor, AdminCreateUserRequest request) {
+        if (userRepository.existsByEmail(request.email().trim().toLowerCase())) {
+            throw new ApiException(HttpStatus.CONFLICT, "An account with that email already exists");
+        }
+        User user = new User();
+        user.setName(request.name().trim());
+        user.setEmail(request.email().trim().toLowerCase());
+        user.setPasswordHash(passwordEncoder.encode(request.password()));
+        user.setRole(request.role() == null ? Role.MEMBER : request.role());
+        user.setStatus(UserStatus.ACTIVE);
+        userRepository.save(user);
+
+        Profile profile = new Profile();
+        profile.setUserId(user.getId());
+        profile.setHeadline(request.headline());
+        profile.setBio(request.bio());
+        profile.setGithub(request.github());
+        profile.setLinkedin(request.linkedin());
+        profile.setPhotoUrl(request.photoUrl());
+        profileRepository.save(profile);
+
+        auditService.record(actor.getId(), "CREATE", "User", user.getId(),
+                "Created account '" + user.getEmail() + "' with role " + user.getRole());
         return new UserDto(user.getId(), user.getName(), user.getEmail(), user.getRole(), user.getStatus());
     }
 

@@ -32,6 +32,7 @@
               </div>
             </div>
             <div class="toolbar-right">
+              <button class="btn btn-primary btn-sm" type="button" id="btn-new-user">New member</button>
               <span class="badge b-member">Roles: ADMIN · CORE_MEMBER · MEMBER</span>
             </div>
           </div>
@@ -72,6 +73,66 @@
       <div class="modal-foot">
         <button class="btn btn-ghost" type="button" data-dialog-close>Close</button>
       </div>
+    </div>
+  </dialog>
+
+  <dialog id="user-create-modal" class="modal" aria-labelledby="user-create-title">
+    <div class="modal-box" style="max-width:560px;">
+      <div class="modal-head">
+        <h2 id="user-create-title">Add team member</h2>
+        <button class="modal-close" type="button" data-dialog-close aria-label="Close">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <form id="user-create-form" class="modal-body form" novalidate>
+        <div class="form-grid">
+          <div class="field">
+            <label for="nu-name">Full name *</label>
+            <input class="input" id="nu-name" name="name" required maxlength="120" autocomplete="off">
+          </div>
+          <div class="field">
+            <label for="nu-email">Email *</label>
+            <input class="input" id="nu-email" name="email" type="email" required maxlength="190" autocomplete="off">
+          </div>
+          <div class="field">
+            <label for="nu-password">Temporary password *</label>
+            <input class="input" id="nu-password" name="password" type="password" required minlength="8" maxlength="72" autocomplete="new-password">
+            <p class="hint">Minimum 8 characters — the member can log in and change it later (change via /profile is a future feature; ask an admin to reset by editing).</p>
+          </div>
+          <div class="field">
+            <label for="nu-role">Role</label>
+            <select class="input" id="nu-role" name="role">
+              <option value="MEMBER">Member</option>
+              <option value="CORE_MEMBER">Core member</option>
+              <option value="ADMIN">Admin</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="nu-headline">Headline</label>
+          <input class="input" id="nu-headline" name="headline" maxlength="190" placeholder="e.g. Backend Developer · Spring Boot">
+        </div>
+        <div class="field">
+          <label for="nu-bio">Bio</label>
+          <textarea class="input" id="nu-bio" name="bio" rows="3" maxlength="5000" placeholder="Short profile shown on the team page"></textarea>
+        </div>
+        <div class="form-grid">
+          <div class="field">
+            <label for="nu-github">GitHub</label>
+            <input class="input" id="nu-github" name="github" maxlength="190" placeholder="username or URL">
+          </div>
+          <div class="field">
+            <label for="nu-linkedin">LinkedIn</label>
+            <input class="input" id="nu-linkedin" name="linkedin" maxlength="190" placeholder="profile URL">
+          </div>
+        </div>
+        <p class="form-error" id="user-create-error" role="alert" hidden></p>
+        <div class="modal-foot" style="padding-inline:0;border-top:none;padding-bottom:0;">
+          <span class="spacer"></span>
+          <button class="btn btn-ghost" type="button" data-dialog-close>Cancel</button>
+          <button class="btn btn-primary" type="submit">Add member</button>
+        </div>
+      </form>
     </div>
   </dialog>
 
