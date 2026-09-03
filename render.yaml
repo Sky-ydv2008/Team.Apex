@@ -14,7 +14,7 @@ services:
     runtime: docker
     repo: https://github.com/Sky-ydv2008/Team.Apex
     plan: free
-    dockerfilePath: ./backend/Dockerfile
+    dockerfilePath: Dockerfile
     healthCheckPath: /api/public/stats
     envVars:
       - key: SPRING_PROFILES_ACTIVE
