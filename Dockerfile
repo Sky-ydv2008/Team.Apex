@@ -14,4 +14,4 @@ COPY frontend /app/frontend
 EXPOSE 8080
 ENV SPRING_PROFILES_ACTIVE=render \
     JAVA_TOOL_OPTIONS="-XX:MaxRAMPercentage=75"
-ENTRYPOINT ["sh", "-c", "echo DB=$PGHOST:$PGPORT/$PGDATABASE user=$PGUSER sslmode=prefer; exec java -jar /app/api.jar"]
+ENTRYPOINT ["sh", "-c", "export JDBC_DATABASE_URL=$(echo "$DATABASE_URL" | sed -E "s#^postgres://#jdbc:postgresql://#"); echo "DB: $(echo "$DATABASE_URL" | sed -E "s#^postgres://[^@]*@##")"; exec java -jar /app/api.jar"]

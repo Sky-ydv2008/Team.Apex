@@ -21,23 +21,7 @@ services:
         value: render
       - key: JWT_SECRET
         generateValue: true
-      - key: PGHOST
+      - key: DATABASE_URL
         fromDatabase:
           name: apex-innovators-db
-          property: host
-      - key: PGPORT
-        fromDatabase:
-          name: apex-innovators-db
-          property: port
-      - key: PGDATABASE
-        fromDatabase:
-          name: apex-innovators-db
-          property: database
-      - key: PGUSER
-        fromDatabase:
-          name: apex-innovators-db
-          property: user
-      - key: PGPASSWORD
-        fromDatabase:
-          name: apex-innovators-db
-          property: password
+          property: connectionString
