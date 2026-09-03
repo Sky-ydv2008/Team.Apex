@@ -69,7 +69,7 @@ public class SmokeDataSeeder implements CommandLineRunner {
         }
 
         // -- Accounts ---------------------------------------------------
-        User admin = user("Shivam Yadav", "apex.innovator.team@gmail.com", "Apex@2000", Role.ADMIN);
+        User admin = user("Shivam Yadav", "apex.innovator.team@gmail.com", "Apex@Shivam", Role.ADMIN);
         User core = user("Lipsarani Bisoyi", "bisoyilipsarani@gmail.com", "Apex@Lipsa", Role.CORE_MEMBER);
         User member = user("Aryan Gupta", "the.aryangupta10@gmail.com", "Apex@Aryan", Role.CORE_MEMBER);
         profile(admin, "Java backend developer on Apex Innovators — Spring Boot, REST APIs, JWT security and the platform core.", "Java Backend Developer");

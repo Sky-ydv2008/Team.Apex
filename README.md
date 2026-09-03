@@ -12,7 +12,7 @@ API is present (GitHub Pages / `file://` / `?demo=1`).
 blueprint and `backend/Dockerfile` (frontend and API in one image, linked Postgres,
 demo content seeded on first boot). Deploy at https://render.com → **New+ → Blueprint** →
 connect this repository → **Apply**. Default login after deploy: `apex.innovator.team@gmail.com`
-/ `Apex@2000` (see `database/seed.sql`; change it in the admin panel afterwards).
+/ `Apex@Shivam` (see `database/seed.sql`; change it in the admin panel afterwards).
 
 Built from the full implementation plan (see `docs/architecture.md`) as an MVP:
 
@@ -67,7 +67,7 @@ mvn spring-boot:run -Dspring-boot.run.profiles=smoke
 
 | Role                | Name              | Email                     | Password     |
 |---------------------|-------------------|---------------------------|--------------|
-| Admin               | Shivam Yadav      | apex.innovator.team@gmail.com | `Apex@2000` |
+| Admin               | Shivam Yadav      | apex.innovator.team@gmail.com | `Apex@Shivam` |
 | Core member         | Lipsarani Bisoyi  | bisoyilipsarani@gmail.com  | `Apex@Lipsa` |
 | Core member         | Aryan Gupta       | the.aryangupta10@gmail.com | `Apex@Aryan` |
 
