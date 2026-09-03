@@ -60,7 +60,7 @@ VALUES
    'Small businesses operate on spreadsheets and gut feeling. They lack actionable visibility into inventory risk, supplier reliability and overall business health, and affordable ERP tools are built for enterprises, not for them.',
    'IntelliERP combines a role-based Mini ERP Core (products, inventory, purchases, sales, expenses, employees) with an Analytics Dashboard and an AI Business Advisor. Predictive logic — stockout forecasting from average daily sales, current stock and supplier lead time, supplier-loss detection, and automatic product classification — runs as transparent rule-based algorithms over transactional data, keeping the hackathon build fully self-contained.',
    'PUBLISHED', 1,
-   'https://github.com/Sky-ydv2008/ai-powered-mini-erp', NULL, NULL, 2026);
+   'https://github.com/Sky-ydv2008/ai-powered-mini-erp', 'https://sky-ydv2008.github.io/Team.Apex/', NULL, 2026);
 
 INSERT INTO project_members (id, project_id, user_id, role, contribution) VALUES
   (1, 1, 1, 'Product & Platform Lead', 'ERP module design, admin experience, integration'),

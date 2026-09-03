@@ -24,7 +24,7 @@ const T = {
     status: "PUBLISHED",
     featured: true,
     githubUrl: "https://github.com/Sky-ydv2008/ai-powered-mini-erp",
-    demoUrl: null,
+    demoUrl: "https://sky-ydv2008.github.io/Team.Apex/",
     docsUrl: null,
     year: 2026,
     technologies: [

@@ -108,6 +108,7 @@ public class SmokeDataSeeder implements CommandLineRunner {
         intellierp.setStatus(ProjectStatus.PUBLISHED);
         intellierp.setFeatured(true);
         intellierp.setGithubUrl("https://github.com/Sky-ydv2008/ai-powered-mini-erp");
+        intellierp.setDemoUrl("https://sky-ydv2008.github.io/Team.Apex/");
         intellierp.setYear(2026);
         projectRepository.save(intellierp);
 
