@@ -68,8 +68,8 @@ mvn spring-boot:run -Dspring-boot.run.profiles=smoke
 | Role                | Name              | Email                     | Password     |
 |---------------------|-------------------|---------------------------|--------------|
 | Admin               | Shivam Yadav      | apex.innovator.team@gmail.com | `Apex@2000` |
-| Core member         | Lipsarani Bisoyi  | bisoyilipsarani@gmail.com  | `Core@123`   |
-| Core member         | Aryan Gupta       | the.aryangupta10@gmail.com | `Member@123` |
+| Core member         | Lipsarani Bisoyi  | bisoyilipsarani@gmail.com  | `Apex@Lipsa` |
+| Core member         | Aryan Gupta       | the.aryangupta10@gmail.com | `Apex@Aryan` |
 
 > The seeded accounts carry the team roster above with role-based bios; finish the
 > personal details (photos, links, richer bios) and the hackathon program

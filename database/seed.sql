@@ -5,7 +5,7 @@
 -- DEMO CONTENT NOTICE
 --   * Accounts below seed the real team roster — update personal bios, links
 --     and the hackathon program name/organizer via the admin dashboard.
---   * Passwords: Apex@2000 / Core@123 / Member@123 (BCrypt hashes).
+--   * Passwords: Apex@2000 / Apex@Lipsa / Apex@Aryan (BCrypt hashes).
 --     Change them after first login.
 -- =====================================================================
 
@@ -16,8 +16,8 @@ USE apex_innovators;
 -- ---------------------------------------------------------------------
 INSERT INTO users (id, name, email, password_hash, role, status) VALUES
   (1, 'Shivam Yadav',   'apex.innovator.team@gmail.com',  '$2b$10$kRInQScjDcnnt4n/h3pMH.U76AbnptjfL0rVAQslXMyJZ9qLpy6pO', 'ADMIN',       'ACTIVE'),
-  (2, 'Lipsarani Bisoyi','bisoyilipsarani@gmail.com',   '$2b$10$S1BNGvaRonwxarbN66zIjuX9g.YkFNppQ0MRUZenaGFdSJQ3d3DTm', 'CORE_MEMBER', 'ACTIVE'),
-  (3, 'Aryan Gupta',    'the.aryangupta10@gmail.com', '$2b$10$C1ShMEbgPxOHFAZ9IngGi.M03rDORRKxgAk7q7khRJoi.wfJFbQgW', 'CORE_MEMBER', 'ACTIVE');
+  (2, 'Lipsarani Bisoyi','bisoyilipsarani@gmail.com',   '$2b$10$BZkIaMuzxkXyULZOQDlPRuObtjiAU4XzZ/V.LsBo6gJPcDYchiSva', 'CORE_MEMBER', 'ACTIVE'),
+  (3, 'Aryan Gupta',    'the.aryangupta10@gmail.com', '$2b$10$dtGBA0xcTTi3CxwaZej2.uWxFu23IsB8ueM3H8EKTDmYEmZisCIv2', 'CORE_MEMBER', 'ACTIVE');
 
 INSERT INTO profiles (user_id, bio, headline, github, linkedin) VALUES
   (1, 'Java backend developer on Apex Innovators — Spring Boot, REST APIs, JWT security and the platform core.',
