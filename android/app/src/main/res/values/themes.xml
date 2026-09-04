@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base application theme. -->
+    <style name="Theme.ApexInnovators" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/accent_cyan</item>
+        <item name="colorPrimaryVariant">@color/accent_cyan_dark</item>
+        <item name="colorOnPrimary">@color/bg_dark</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/accent_cyan</item>
+        <item name="colorSecondaryVariant">@color/accent_cyan_dark</item>
+        <item name="colorOnSecondary">@color/bg_dark</item>
+        <!-- Status bar and navigation bar color. -->
+        <item name="android:statusBarColor">@color/bg_dark</item>
+        <item name="android:navigationBarColor">@color/bg_dark</item>
+        <item name="android:windowBackground">@color/bg_dark</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
+    </style>
+
+    <!-- Splash screen theme. -->
+    <style name="Theme.ApexInnovators.Splash" parent="Theme.ApexInnovators">
+        <item name="android:windowBackground">@drawable/splash_background</item>
+    </style>
+</resources>

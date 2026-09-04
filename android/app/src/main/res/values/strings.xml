@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Apex Innovators</string>
+    <string name="offline_title">No Connection</string>
+    <string name="offline_desc">Unable to reach the platform. Please check your mobile data or Wi-Fi network and try again.</string>
+    <string name="retry_button">Retry Connection</string>
+    <string name="exit_prompt">Press back again to exit</string>
+</resources>
