@@ -65,12 +65,3 @@ if (form) {
   });
 }
 
-document.querySelectorAll(".demo-fill-btn").forEach((btn) => {
-  btn.addEventListener("click", () => {
-    const email = btn.getAttribute("data-email") || "";
-    const pass = btn.getAttribute("data-pass") || "";
-    if (form && form.elements.email) form.elements.email.value = email;
-    if (form && form.elements.password) form.elements.password.value = pass;
-    if (alertHost) alertHost.innerHTML = "";
-  });
-});
