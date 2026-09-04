@@ -59,8 +59,9 @@ const ICONS = {
   link: '<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',
   zap: '<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>',
   dashboard: '<rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/>',
+  smartphone: '<rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><line x1="12" x2="12.01" y1="18" y2="18"/>',
+  download: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/>',
 };
-
 /** Inline SVG string for `name`. */
 export function icon(name, cls = "") {
   const inner = ICONS[name] || ICONS.flag;
@@ -291,7 +292,7 @@ export function injectFooter() {
             <li><a href="resources.html">${icon("book")} Resources</a></li>
             <li><a href="about.html">${icon("info")} About</a></li>
             <li><a href="contact.html">${icon("mail")} Contact</a></li>
-          </ul>
+            <li><a href="https://github.com/Sky-ydv2008/Team.Apex/releases/download/v1.0.0/ApexInnovators.apk" download>${icon("smartphone")} Android App (APK)</a></li>
         </nav>
         <div class="footer-col">
           <h4>Get involved</h4>
@@ -299,6 +300,7 @@ export function injectFooter() {
             <p>Want to build alongside us, or share your own project with the community?</p>
             <a class="btn btn-primary btn-sm" href="register.html">Join the team</a>
             <a class="btn btn-outline btn-sm" href="community.html">Explore community</a>
+            <a class="btn btn-outline btn-sm" href="https://github.com/Sky-ydv2008/Team.Apex/releases/download/v1.0.0/ApexInnovators.apk" download style="color:#22d3ee;border-color:rgba(34,211,238,0.35);">${icon("download")} Download Android App</a>
           </div>
         </div>
       </div>
@@ -324,6 +326,7 @@ export function mountAuthUI() {
   const page = currentPageName();
   const here = (target) => page === target;
 
+  const appBtn = `<a class="btn btn-sm btn-outline" href="https://github.com/Sky-ydv2008/Team.Apex/releases/download/v1.0.0/ApexInnovators.apk" download title="Download Android App" style="border-color:rgba(34,211,238,0.35);color:#22d3ee;display:inline-flex;align-items:center;gap:0.35rem;">${icon("smartphone")} <span>App</span></a>`;
   if (!user || !localStorage.getItem("ai_token")) {
     const loginBtn = here("login.html")
       ? ""
@@ -331,7 +334,7 @@ export function mountAuthUI() {
     const registerBtn = here("register.html")
       ? ""
       : `<a class="btn btn-sm btn-primary" href="register.html">Join us</a>`;
-    host.innerHTML = loginBtn + registerBtn || `<a class="btn btn-sm btn-ghost" href="login.html">Log in</a>`;
+    host.innerHTML = appBtn + (loginBtn + registerBtn || `<a class="btn btn-sm btn-ghost" href="login.html">Log in</a>`);
     return;
   }
 
@@ -348,9 +351,7 @@ export function mountAuthUI() {
   if (!here("register.html")) {
     parts.push(`<button class="btn btn-sm btn-ghost" id="nav-logout" type="button">${icon("logout")} Logout</button>`);
   }
-  host.innerHTML = parts.join("");
-
-  const logoutBtn = document.getElementById("nav-logout");
+  host.innerHTML = appBtn + parts.join("");
   if (logoutBtn) {
     logoutBtn.addEventListener("click", () => {
       localStorage.removeItem("ai_token");

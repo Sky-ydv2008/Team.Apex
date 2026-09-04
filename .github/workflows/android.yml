@@ -48,3 +48,19 @@ jobs:
           name: ApexInnovators-Android-APK
           path: android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
+
+      - name: Prepare Release APK
+        run: cp android/app/build/outputs/apk/debug/app-debug.apk ApexInnovators.apk
+
+      - name: Publish to GitHub Release
+        uses: softprops/action-gh-release@v2
+        if: github.ref == 'refs/heads/main'
+        with:
+          tag_name: v1.0.0
+          name: Apex Innovators Android App v1.0.0
+          body: |
+            ### Apex Innovators Android App
+            Native Android application for the Apex Innovators developer team platform.
+
+            - **Download:** Click `ApexInnovators.apk` below to download and install directly on any Android phone.
+          files: ApexInnovators.apk
