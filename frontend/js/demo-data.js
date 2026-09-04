@@ -44,6 +44,7 @@ const T = {
     members: [
       { userId: 1, name: "Shivam Yadav", role: "Java Backend Developer", contribution: "Spring Boot REST APIs, Spring Security + JWT, predictive inventory logic" },
       { userId: 2, name: "Lipsarani Bisoyi", role: "Frontend Developer", contribution: "UI, design system and client-side integration" },
+      { userId: 3, name: "Aryan Gupta", role: "Full Stack Developer", contribution: "Full stack integration, decision engine testing & cloud deployment" },
     ],
     hackathons: [{ id: 1, name: "Build With 2.0" }],
     createdAt: "2026-09-01T09:00:00",
@@ -97,6 +98,47 @@ const TEAM = [
   { id: 1, name: "Shivam Yadav", role: "ADMIN", headline: "Java Backend Developer", bio: "Java backend developer on Apex Innovators — Spring Boot, REST APIs, JWT security and the platform core.", photoUrl: null, github: "Sky-ydv2008", linkedin: null },
   { id: 2, name: "Lipsarani Bisoyi", role: "CORE_MEMBER", headline: "Frontend Developer", bio: "Frontend developer on Apex Innovators — crafting the interfaces, design system and user experience.", photoUrl: null, github: null, linkedin: null },
   { id: 3, name: "Aryan Gupta", role: "CORE_MEMBER", headline: "Full Stack Developer", bio: "Full stack developer on Apex Innovators — backend to browser, from database to deployed product.", photoUrl: null, github: null, linkedin: null },
+];
+export const DEMO_ACCOUNTS = [
+  {
+    id: 1,
+    name: "Shivam Yadav",
+    email: "apex.innovator.team@gmail.com",
+    password: "Apex@Shivam",
+    role: "ADMIN",
+    status: "ACTIVE",
+    headline: "Java Backend Developer",
+    bio: "Java backend developer on Apex Innovators — Spring Boot, REST APIs, JWT security and the platform core.",
+    photoUrl: null,
+    github: "Sky-ydv2008",
+    linkedin: null,
+  },
+  {
+    id: 2,
+    name: "Lipsarani Bisoyi",
+    email: "bisoyilipsarani@gmail.com",
+    password: "Apex@Lipsa",
+    role: "CORE_MEMBER",
+    status: "ACTIVE",
+    headline: "Frontend Developer",
+    bio: "Frontend developer on Apex Innovators — crafting the interfaces, design system and user experience.",
+    photoUrl: null,
+    github: null,
+    linkedin: null,
+  },
+  {
+    id: 3,
+    name: "Aryan Gupta",
+    email: "the.aryangupta10@gmail.com",
+    password: "Apex@Aryan",
+    role: "CORE_MEMBER",
+    status: "ACTIVE",
+    headline: "Full Stack Developer",
+    bio: "Full stack developer on Apex Innovators — backend to browser, from database to deployed product.",
+    photoUrl: null,
+    github: null,
+    linkedin: null,
+  },
 ];
 
 const ACHIEVEMENTS = [
@@ -237,12 +279,177 @@ export function demoFetch(method, path, params = {}, body = {}) {
     return { id: 1, name: b.name || "Guest", email: b.email || "", subject: b.subject || "", message: b.message || "", status: "NEW", createdAt: new Date().toISOString() };
   }
 
-  // Account / admin surfaces need the real backend ---------------------
-  if (base === "auth" || base === "admin") {
-    return err(401, DEMO_NOTE);
+  // Auth endpoints (demo mode) ----------------------------------------
+  if (base === "auth") {
+    const sub = seg[1];
+    if (method === "POST" && sub === "login") {
+      const email = String((body && body.email) || "").trim().toLowerCase();
+      const pass = String((body && body.password) || "");
+      const found = DEMO_ACCOUNTS.find((a) => a.email.toLowerCase() === email);
+      if (found && found.password === pass) {
+        return {
+          token: `demo-token-${found.id}-${Date.now()}`,
+          refreshToken: `demo-refresh-${found.id}-${Date.now()}`,
+          user: {
+            id: found.id,
+            name: found.name,
+            email: found.email,
+            role: found.role,
+            status: found.status,
+            headline: found.headline,
+            bio: found.bio,
+            github: found.github,
+            linkedin: found.linkedin,
+          },
+        };
+      }
+      return err(401, "Incorrect email or password. In demo mode, use apex.innovator.team@gmail.com (Apex@Shivam), the.aryangupta10@gmail.com (Apex@Aryan), or bisoyilipsarani@gmail.com (Apex@Lipsa).");
+    }
+
+    if (method === "GET" && (sub === "me" || sub === "profile")) {
+      try {
+        const raw = localStorage.getItem("ai_user");
+        if (raw) return JSON.parse(raw);
+      } catch (e) {}
+      return DEMO_ACCOUNTS[0];
+    }
+
+    if (method === "PUT" && sub === "profile") {
+      let current = DEMO_ACCOUNTS[0];
+      try {
+        const raw = localStorage.getItem("ai_user");
+        if (raw) current = JSON.parse(raw);
+      } catch (e) {}
+      const updated = { ...current, ...(body || {}) };
+      try {
+        localStorage.setItem("ai_user", JSON.stringify(updated));
+      } catch (e) {}
+      return updated;
+    }
+
+    if ((method === "POST" || method === "PUT") && sub === "password") {
+      return { message: "Password updated successfully in demo mode." };
+    }
+
+    if (method === "POST" && sub === "register") {
+      const newUser = {
+        id: Date.now(),
+        name: (body && body.name) || "Member",
+        email: (body && body.email) || "member@example.com",
+        role: "MEMBER",
+        status: "ACTIVE",
+      };
+      return {
+        token: `demo-token-${newUser.id}`,
+        refreshToken: `demo-refresh-${newUser.id}`,
+        user: newUser,
+      };
+    }
+
+    if (method === "POST" && sub === "logout") {
+      return null;
+    }
   }
+
+  // Admin endpoints (demo mode) ---------------------------------------
+  if (base === "admin") {
+    const sub = seg[1];
+    if (sub === "overview") {
+      return {
+        totalProjects: Object.keys(T).length,
+        totalHackathons: 1,
+        totalMembers: DEMO_ACCOUNTS.length,
+        publishedPosts: POSTS.length,
+        pendingProjects: 0,
+        pendingPosts: 0,
+        unreadMessages: 0,
+        recentActivity: [
+          { id: 1, actor: "Shivam Yadav", action: "PUBLISHED", entity: "IntelliERP", detail: "Case study live", createdAt: "2026-09-02T10:00:00" },
+          { id: 2, actor: "Aryan Gupta", action: "SUBMITTED", entity: "Hack Night Bot", detail: "Bot helper live", createdAt: "2026-09-02T14:00:00" },
+          { id: 3, actor: "Lipsarani Bisoyi", action: "COMMENTED", entity: "IntelliERP", detail: "Great write-up", createdAt: "2026-09-02T11:00:00" },
+        ],
+      };
+    }
+
+    if (sub === "users") {
+      if (seg.length === 2 && method === "GET") {
+        let users = DEMO_ACCOUNTS;
+        if (params.q) users = users.filter((u) => qMatch(params.q, u.name, u.email, u.headline));
+        return page(users, params.page, params.size);
+      }
+      if (seg.length === 3 && seg[2] === "audit") {
+        return page([
+          { id: 1, actor: "Shivam Yadav", action: "UPDATE", detail: "Account active", createdAt: "2026-09-02T10:00:00" }
+        ], params.page, params.size);
+      }
+      if (seg.length === 3 && method === "GET") {
+        const u = DEMO_ACCOUNTS.find((a) => String(a.id) === seg[2]) || DEMO_ACCOUNTS[0];
+        return u;
+      }
+      if (method === "POST" || method === "PUT" || method === "PATCH") {
+        return { ...(body || {}), id: Date.now(), status: "ACTIVE" };
+      }
+      if (method === "DELETE") {
+        return null;
+      }
+    }
+
+    if (sub === "projects") {
+      if (method === "GET" && seg.length === 2) {
+        return page(Object.values(T), params.page, params.size);
+      }
+      if (method === "POST" || method === "PUT" || method === "PATCH") {
+        return { ...(body || {}), id: Date.now(), status: "PUBLISHED" };
+      }
+      if (method === "DELETE") {
+        return null;
+      }
+    }
+
+    if (sub === "hackathons") {
+      if (method === "GET" && seg.length === 2) {
+        return page([HACKATHON], params.page, params.size);
+      }
+      if (method === "POST" || method === "PUT") {
+        return { ...(body || {}), id: Date.now() };
+      }
+      if (method === "DELETE") {
+        return null;
+      }
+    }
+
+    if (sub === "posts") {
+      if (method === "GET" && seg.length === 2) {
+        return page(POSTS, params.page, params.size);
+      }
+      if (method === "POST" || method === "PATCH") {
+        return { ...(body || {}), id: Date.now(), status: "PUBLISHED" };
+      }
+      if (method === "DELETE") {
+        return null;
+      }
+    }
+
+    if (sub === "achievements") {
+      if (method === "GET" && seg.length === 2) {
+        return page(ACHIEVEMENTS, params.page, params.size);
+      }
+      if (method === "POST" || method === "PUT") {
+        return { ...(body || {}), id: Date.now() };
+      }
+      if (method === "DELETE") {
+        return null;
+      }
+    }
+
+    if (sub === "messages") {
+      if (method === "GET") return page([], params.page, params.size);
+      return { success: true };
+    }
+  }
+
   if (method !== "GET") {
-    return err(403, DEMO_NOTE);
+    return { success: true, message: "Action accepted in demo mode." };
   }
   return err(404, "Not found in the demo dataset");
 }

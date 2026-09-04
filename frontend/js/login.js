@@ -56,9 +56,7 @@ if (form) {
       toast(`Welcome back, ${user.name}`, "success");
       redirectFor(user);
     } catch (err) {
-      const message = err && err.status === 401
-        ? "Incorrect email or password."
-        : (err && err.message) || "Could not sign in. Please try again.";
+      const message = (err && (err.messageText || err.message)) || "Incorrect email or password.";
       showError(message);
       toast(message, "error");
       submitBtn.disabled = false;
@@ -66,3 +64,13 @@ if (form) {
     }
   });
 }
+
+document.querySelectorAll(".demo-fill-btn").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const email = btn.getAttribute("data-email") || "";
+    const pass = btn.getAttribute("data-pass") || "";
+    if (form && form.elements.email) form.elements.email.value = email;
+    if (form && form.elements.password) form.elements.password.value = pass;
+    if (alertHost) alertHost.innerHTML = "";
+  });
+});
