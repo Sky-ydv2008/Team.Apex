@@ -8,7 +8,7 @@
  *   redirect to login.html.
  */
 
-import { demoActive, demoFetch } from "./demo-data.js";
+import { demoActive, demoFetch } from "./demo-data.js?v=2";
 
 export const API_BASE = "/api";
 

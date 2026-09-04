@@ -114,6 +114,7 @@ public class SmokeDataSeeder implements CommandLineRunner {
 
         memberOf(intellierp, admin, "Java Backend Developer", "Spring Boot REST APIs, Spring Security + JWT, predictive inventory logic");
         memberOf(intellierp, core, "Frontend Developer", "UI, design system and client-side integration");
+        memberOf(intellierp, member, "Full Stack Developer", "Full stack integration, decision engine testing & cloud deployment");
         linkTech(intellierp, java, spring, sec, jwt, mysql, jpa, maven, js, html, css, rest, swagger);
 
         // -- Hackathon archive ---------------------------------------------
@@ -128,6 +129,7 @@ public class SmokeDataSeeder implements CommandLineRunner {
 
         memberOf(hackathon, admin);
         memberOf(hackathon, core);
+        memberOf(hackathon, member);
         linkProject(hackathon, intellierp);
 
         // -- Achievement -----------------------------------------------------

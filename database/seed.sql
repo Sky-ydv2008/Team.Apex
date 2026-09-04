@@ -62,7 +62,8 @@ VALUES
 
 INSERT INTO project_members (id, project_id, user_id, role, contribution) VALUES
   (1, 1, 1, 'Java Backend Developer',   'Spring Boot REST APIs, Spring Security + JWT, predictive inventory logic'),
-  (2, 1, 2, 'Frontend Developer',        'UI, design system and client-side integration');
+  (2, 1, 2, 'Frontend Developer',        'UI, design system and client-side integration'),
+  (3, 1, 3, 'Full Stack Developer',      'Full stack integration, decision engine testing & cloud deployment');
 
 INSERT INTO project_technologies (project_id, technology_id) VALUES
   (1, 1), (1, 5), (1, 6), (1, 7), (1, 8), (1, 9), (1, 2), (1, 3), (1, 4), (1, 10), (1, 11), (1, 12);
@@ -83,6 +84,7 @@ VALUES
 
 INSERT INTO hackathon_members (id, hackathon_id, user_id) VALUES
   (1, 1, 1),
-  (2, 1, 2);
+  (2, 1, 2),
+  (3, 1, 3);
 
 INSERT INTO hackathon_projects (hackathon_id, project_id) VALUES (1, 1);

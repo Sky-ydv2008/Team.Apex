@@ -4,7 +4,7 @@
  * login / register / logout, and the admin role guard.
  */
 
-import { apiFetch, TOKEN_KEY, REFRESH_KEY, USER_KEY, redirectToLogin, ApiError } from "./api.js";
+import { apiFetch, TOKEN_KEY, REFRESH_KEY, USER_KEY, redirectToLogin, ApiError } from "./api.js?v=2";
 
 export { TOKEN_KEY, REFRESH_KEY, USER_KEY };
 

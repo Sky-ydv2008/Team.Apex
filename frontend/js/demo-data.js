@@ -190,7 +190,6 @@ const COMMENTS = {
 
 const STATS = { projects: 2, hackathons: 1, members: 3, technologies: 13, achievements: 1 };
 
-const DEMO_NOTE = "This is the GitHub Pages demo preview with built-in sample data. Log in, posting and the admin panel need the live backend (see the repo README).";
 
 function err(status, message) {
   return { __demoError: { status, message } };
