@@ -41,6 +41,9 @@ android {
     buildFeatures {
         viewBinding = true
     }
+    androidResources {
+        noCompress += listOf("dat", "bundle")
+    }
 }
 
 dependencies {
