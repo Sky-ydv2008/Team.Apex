@@ -16,9 +16,11 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.apexinnovators.app.databinding.ActivityMainBinding
+import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
 
@@ -36,7 +38,7 @@ class MainActivity : AppCompatActivity() {
         }
 
     companion object {
-        const val BASE_URL = "https://sky-ydv2008.github.io/Team.Apex/"
+        val BASE_URL: String = BuildConfig.START_URL
         const val HOST = "sky-ydv2008.github.io"
     }
 
@@ -51,6 +53,7 @@ class MainActivity : AppCompatActivity() {
         setupWebView()
         setupOfflineHandling()
         setupBackNavigation()
+        setupAdminFeatures()
 
         if (savedInstanceState != null) {
             binding.webView.restoreState(savedInstanceState)
@@ -74,7 +77,8 @@ class MainActivity : AppCompatActivity() {
         settings.setSupportZoom(false)
 
         // User agent branding
-        settings.userAgentString = settings.userAgentString + " ApexInnovatorsAndroid/1.0.0"
+        val appVariant = if (BuildConfig.IS_ADMIN_APP) "ApexAdminAndroid/1.0.0" else "ApexInnovatorsAndroid/1.0.0"
+        settings.userAgentString = settings.userAgentString + " " + appVariant
 
         // Cache policy: use cache if network is unavailable
         settings.cacheMode = if (isNetworkConnected()) {
@@ -201,6 +205,61 @@ class MainActivity : AppCompatActivity() {
             return false
         }
         return true
+    }
+
+    private fun setupAdminFeatures() {
+        if (!BuildConfig.IS_ADMIN_APP) return
+
+        binding.fabAdminAccounts.visibility = View.VISIBLE
+        binding.fabAdminAccounts.setOnClickListener {
+            showTeamAccountDialog()
+        }
+    }
+
+    private fun showTeamAccountDialog() {
+        val options = arrayOf(
+            "Shivam Yadav (Admin — Full Access)",
+            "Aryan Gupta (Core Member — Full Stack / Moderation)",
+            "Lipsarani Bisoyi (Core Member — Frontend / Moderation)",
+            "Custom Login (Enter credentials manually)"
+        )
+
+        AlertDialog.Builder(this)
+            .setTitle("Core Team Access")
+            .setItems(options) { _, which ->
+                when (which) {
+                    0 -> switchAccount(1, "Shivam Yadav", "apex.innovator.team@gmail.com", "ADMIN", "Java Backend Developer")
+                    1 -> switchAccount(3, "Aryan Gupta", "the.aryangupta10@gmail.com", "CORE_MEMBER", "Full Stack Developer")
+                    2 -> switchAccount(2, "Lipsarani Bisoyi", "bisoyilipsarani@gmail.com", "CORE_MEMBER", "Frontend Developer")
+                    3 -> binding.webView.loadUrl("https://sky-ydv2008.github.io/Team.Apex/login.html?next=admin%2Fdashboard.html")
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun switchAccount(id: Int, name: String, email: String, role: String, headline: String) {
+        val userJson = JSONObject().apply {
+            put("id", id)
+            put("name", name)
+            put("email", email)
+            put("role", role)
+            put("status", "ACTIVE")
+            put("headline", headline)
+            put("bio", "")
+            put("github", if (id == 1) "Sky-ydv2008" else null)
+            put("linkedin", null)
+        }.toString()
+
+        val redirectPage = if (role == "ADMIN") "admin/dashboard.html" else "admin/projects.html"
+        val js = """
+            localStorage.setItem('ai_token', 'demo-token-$id-${System.currentTimeMillis()}');
+            localStorage.setItem('ai_user', JSON.stringify($userJson));
+            window.location.assign('$redirectPage');
+        """.trimIndent()
+
+        binding.webView.evaluateJavascript(js, null)
+        Toast.makeText(this, "Active: $name ($role)", Toast.LENGTH_SHORT).show()
     }
 
     private fun setupSwipeRefresh() {

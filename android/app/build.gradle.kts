@@ -8,7 +8,6 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.apexinnovators.app"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
@@ -17,17 +16,33 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    flavorDimensions += "role"
+    productFlavors {
+        create("client") {
+            dimension = "role"
+            applicationId = "com.apexinnovators.app"
+            manifestPlaceholders["appName"] = "Apex Innovators"
+            buildConfigField("String", "START_URL", "\"https://sky-ydv2008.github.io/Team.Apex/index.html\"")
+            buildConfigField("Boolean", "IS_ADMIN_APP", "false")
+        }
+        create("admin") {
+            dimension = "role"
+            applicationId = "com.apexinnovators.admin"
+            manifestPlaceholders["appName"] = "Apex Admin"
+            buildConfigField("String", "START_URL", "\"https://sky-ydv2008.github.io/Team.Apex/admin/dashboard.html\"")
+            buildConfigField("Boolean", "IS_ADMIN_APP", "true")
+        }
+    }
+
     buildTypes {
         release {
-            isMinifyEnabled = true
-            isShrinkResources = true
+            isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
         }
         debug {
-            applicationIdSuffix = ".debug"
             isDebuggable = true
         }
     }
@@ -40,6 +55,7 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
     androidResources {
         noCompress += listOf("dat", "bundle")

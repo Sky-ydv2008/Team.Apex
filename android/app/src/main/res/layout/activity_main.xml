@@ -78,4 +78,15 @@
 
     </LinearLayout>
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAdminAccounts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="20dp"
+        android:contentDescription="Switch Team Member"
+        android:src="@drawable/ic_admin_switch"
+        app:backgroundTint="@color/accent_cyan"
+        app:tint="@color/bg_dark"
+        android:visibility="gone" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

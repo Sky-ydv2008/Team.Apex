@@ -38,29 +38,40 @@ jobs:
           sed -i 's/\r$//' android/gradlew
           chmod +x android/gradlew
 
-      - name: Build Debug APK
+      - name: Build Android APKs
         working-directory: android
-        run: ./gradlew assembleDebug --no-daemon --stacktrace
+        run: ./gradlew assembleClientDebug assembleAdminDebug --no-daemon --stacktrace
 
-      - name: Upload APK Artifact
+      - name: Prepare Release APKs
+        run: |
+          cp android/app/build/outputs/apk/client/debug/app-client-debug.apk ApexInnovators.apk
+          cp android/app/build/outputs/apk/admin/debug/app-admin-debug.apk ApexAdmin.apk
+
+      - name: Upload Client APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: ApexInnovators-Android-APK
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          path: ApexInnovators.apk
           if-no-files-found: error
 
-      - name: Prepare Release APK
-        run: cp android/app/build/outputs/apk/debug/app-debug.apk ApexInnovators.apk
+      - name: Upload Admin APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ApexAdmin-Android-APK
+          path: ApexAdmin.apk
+          if-no-files-found: error
 
       - name: Publish to GitHub Release
         uses: softprops/action-gh-release@v2
         if: github.ref == 'refs/heads/main'
         with:
           tag_name: v1.0.0
-          name: Apex Innovators Android App v1.0.0
+          name: Apex Innovators Android Apps v1.0.0
           body: |
-            ### Apex Innovators Android App
-            Native Android application for the Apex Innovators developer team platform.
+            ### Apex Innovators Android Applications
 
-            - **Download:** Click `ApexInnovators.apk` below to download and install directly on any Android phone.
-          files: ApexInnovators.apk
+            1. **ApexInnovators.apk** — Public application for users and students to explore projects, hackathons, and community.
+            2. **ApexAdmin.apk** — Admin & Core Team application with direct management, content moderation, and dashboard access for Shivam Yadav, Aryan Gupta, and Lipsarani Bisoyi.
+          files: |
+            ApexInnovators.apk
+            ApexAdmin.apk
