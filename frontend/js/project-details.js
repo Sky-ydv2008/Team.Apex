@@ -4,7 +4,7 @@
  * Robust handling of missing optional fields + not-found/error states.
  */
 
-import { apiFetch, errorMessage } from "./api.js";
+import { apiFetch, errorMessage } from "./api.js?v=2";
 import {
   esc, icon, avatar, formatDate, humanize,
   mountLoading, mountData, mountEmpty, mountError,

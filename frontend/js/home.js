@@ -5,7 +5,7 @@
  * curated fallback), achievements wall, team preview (/team).
  */
 
-import { apiFetch, errorMessage } from "./api.js";
+import { apiFetch, errorMessage } from "./api.js?v=2";
 import { esc, mountLoading, mountData, mountEmpty, mountError } from "./components.js";
 import { projectCardHTML, memberCardHTML, achievementWallItem } from "./cards.js";
 import { STATIC_TECHNOLOGIES } from "./static.js";

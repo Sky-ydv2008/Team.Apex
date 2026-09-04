@@ -3,7 +3,7 @@
  * Published team members. GET /team
  */
 
-import { apiFetch, errorMessage } from "./api.js";
+import { apiFetch, errorMessage } from "./api.js?v=2";
 import { mountLoading, mountData, mountEmpty, mountError } from "./components.js";
 import { memberCardHTML } from "./cards.js";
 
