@@ -97,11 +97,26 @@
 
 /* ---------- Main column ---------- */
 .admin-main {
+  position: relative;
   min-width: 0;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
+.admin-grid-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.admin-content {
+  position: relative;
+  z-index: 5;
+}
 .admin-topbar {
   position: sticky;
   top: 0;

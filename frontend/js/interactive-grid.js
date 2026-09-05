@@ -111,10 +111,21 @@ export function initInteractiveGrid(canvasId = "hero-interactive-grid", opts = {
   };
 }
 
+export function autoInitGrid() {
+  if (typeof document === "undefined") return;
+  const targets = document.querySelectorAll("#hero-interactive-grid, #admin-interactive-grid, .hero-grid-canvas, .admin-grid-canvas");
+  targets.forEach((c) => {
+    if (!c.dataset.gridInited) {
+      c.dataset.gridInited = "true";
+      initInteractiveGrid(c);
+    }
+  });
+}
+
 if (typeof document !== "undefined") {
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", () => initInteractiveGrid());
+    document.addEventListener("DOMContentLoaded", () => autoInitGrid());
   } else {
-    initInteractiveGrid();
+    autoInitGrid();
   }
 }

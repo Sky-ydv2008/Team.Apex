@@ -437,6 +437,15 @@ export function injectAdminShell(active, user) {
   const topbar = document.getElementById("admin-topbar");
   if (!aside && !topbar) return;
 
+  if (topbar && topbar.parentElement && !document.getElementById("admin-interactive-grid")) {
+    const mainCol = topbar.parentElement;
+    const canvas = document.createElement("canvas");
+    canvas.id = "admin-interactive-grid";
+    canvas.className = "admin-grid-canvas";
+    canvas.setAttribute("aria-hidden", "true");
+    mainCol.prepend(canvas);
+    import("./interactive-grid.js").then((m) => m && m.autoInitGrid && m.autoInitGrid()).catch(() => {});
+  }
   const section = ADMIN_SECTIONS.find((s) => s.id === active) || ADMIN_SECTIONS[0];
 
   const sections = (user && user.role === "CORE_MEMBER")
