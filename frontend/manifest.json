@@ -9,10 +9,16 @@
   "description": "Student developer team at Parul Institute of Engineering and Technology. Projects, hackathons and builder community.",
   "icons": [
     {
-      "src": "favicon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
+      "src": "logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
       "purpose": "any maskable"
+    },
+    {
+      "src": "favicon.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any"
     }
   ]
 }
