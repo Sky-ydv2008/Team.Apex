@@ -341,7 +341,7 @@ export function injectFooter() {
             <li><a href="resources.html">${icon("book")} Resources</a></li>
             <li><a href="about.html">${icon("info")} About</a></li>
             <li><a href="contact.html">${icon("mail")} Contact</a></li>
-            ${isAppMode() ? "" : `<li><a href="https://github.com/Sky-ydv2008/Team.Apex/releases/download/v1.0.0/ApexInnovators.apk" download data-app-download="true">${icon("smartphone")} Android App (APK)</a></li>`}
+            ${isAppMode() ? "" : `<li><a href="https://github.com/Sky-ydv2008/Team.Apex/releases/latest/download/ApexInnovators.apk" download data-app-download="true">${icon("smartphone")} Android App (APK)</a></li>`}
           </ul>
         </nav>
         <div class="footer-col">
@@ -350,7 +350,7 @@ export function injectFooter() {
             <p>Want to build alongside us, or share your own project with the community?</p>
             <a class="btn btn-primary btn-sm" href="register.html">Join the team</a>
             <a class="btn btn-outline btn-sm" href="community.html">Explore community</a>
-            ${isAppMode() ? "" : `<a class="btn btn-outline btn-sm" href="https://github.com/Sky-ydv2008/Team.Apex/releases/download/v1.0.0/ApexInnovators.apk" download data-app-download="true" style="color:#22d3ee;border-color:rgba(34,211,238,0.35);">${icon("download")} Download Android App</a>`}
+            ${isAppMode() ? "" : `<a class="btn btn-outline btn-sm" href="https://github.com/Sky-ydv2008/Team.Apex/releases/latest/download/ApexInnovators.apk" download data-app-download="true" style="color:#22d3ee;border-color:rgba(34,211,238,0.35);">${icon("download")} Download Android App</a>`}
           </div>
         </div>
       </div>
@@ -376,7 +376,7 @@ export function mountAuthUI() {
   const page = currentPageName();
   const here = (target) => page === target;
 
-  const appBtn = isAppMode() ? "" : `<a class="btn btn-sm btn-outline" href="https://github.com/Sky-ydv2008/Team.Apex/releases/download/v1.0.0/ApexInnovators.apk" download data-app-download="true" title="Download Android App" style="border-color:rgba(34,211,238,0.35);color:#22d3ee;display:inline-flex;align-items:center;gap:0.35rem;">${icon("smartphone")} <span>App</span></a>`;
+  const appBtn = isAppMode() ? "" : `<a class="btn btn-sm btn-outline" href="https://github.com/Sky-ydv2008/Team.Apex/releases/latest/download/ApexInnovators.apk" download data-app-download="true" title="Download Android App" style="border-color:rgba(34,211,238,0.35);color:#22d3ee;display:inline-flex;align-items:center;gap:0.35rem;">${icon("smartphone")} <span>App</span></a>`;
   if (!user || !localStorage.getItem("ai_token")) {
     const loginBtn = here("login.html")
       ? ""
