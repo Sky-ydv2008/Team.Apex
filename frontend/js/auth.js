@@ -147,3 +147,64 @@ export async function requireLogin() {
     return null; // apiFetch redirected on 401
   }
 }
+
+/** Attach spotlight glow tracking, input glow border hover, and shimmer button wave to auth pages. */
+export function setupAuthAnimations() {
+  if (typeof document === "undefined") return;
+
+  // 1. Mouse Spotlight tracking for .spotlight-card
+  document.querySelectorAll(".spotlight-card").forEach((card) => {
+    let glow = card.querySelector(".spotlight-glow");
+    if (!glow) {
+      glow = document.createElement("div");
+      glow.className = "spotlight-glow";
+      card.appendChild(glow);
+    }
+    card.addEventListener("mousemove", (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      glow.style.transform = `translate(${x - 225}px, ${y - 225}px)`;
+    });
+  });
+
+  // 2. Input border glow tracking for .input-glow-wrapper
+  document.querySelectorAll(".input-glow-wrapper").forEach((wrapper) => {
+    let topBorder = wrapper.querySelector(".glow-border-top");
+    let botBorder = wrapper.querySelector(".glow-border-bottom");
+    if (!topBorder) {
+      topBorder = document.createElement("div");
+      topBorder.className = "glow-border-top";
+      wrapper.appendChild(topBorder);
+    }
+    if (!botBorder) {
+      botBorder = document.createElement("div");
+      botBorder.className = "glow-border-bottom";
+      wrapper.appendChild(botBorder);
+    }
+
+    wrapper.addEventListener("mousemove", (e) => {
+      const rect = wrapper.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      topBorder.style.background = `radial-gradient(40px circle at ${x}px 0px, #22d3ee 0%, transparent 75%)`;
+      botBorder.style.background = `radial-gradient(40px circle at ${x}px 2px, #22d3ee 0%, transparent 75%)`;
+    });
+  });
+
+  // 3. Shimmer wave on submit buttons (.btn-shimmer)
+  document.querySelectorAll(".btn-shimmer").forEach((btn) => {
+    if (!btn.querySelector(".shimmer-wave")) {
+      const wave = document.createElement("div");
+      wave.className = "shimmer-wave";
+      btn.appendChild(wave);
+    }
+  });
+}
+
+if (typeof document !== "undefined") {
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupAuthAnimations);
+  } else {
+    setupAuthAnimations();
+  }
+}
