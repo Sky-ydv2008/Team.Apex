@@ -185,25 +185,40 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun handleUrl(url: String): Boolean {
-        val uri = Uri.parse(url)
+        if (url.isBlank()) return false
 
-        // Internal platform navigation (GitHub Pages & Render live deployments) remains in WebView
-        val host = uri.host ?: ""
-        if (host == HOST || host.endsWith("onrender.com") || host.contains("apexinnovators")) {
-            return false
-        }
-
-        // Handle protocols like tel:, mailto:, sms:, whatsapp:
+        // Protocols like tel:, mailto:, sms:, whatsapp: open in external app
         if (url.startsWith("tel:") || url.startsWith("mailto:") || url.startsWith("sms:") || url.startsWith("whatsapp:")) {
             try {
-                startActivity(Intent(Intent.ACTION_VIEW, uri))
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
             } catch (e: Exception) {
                 Toast.makeText(this, "No application found to handle this link", Toast.LENGTH_SHORT).show()
             }
             return true
         }
 
-        // External URLs (GitHub, LinkedIn, Render, etc.) open in external browser
+        // Relative URLs (e.g. projects.html, ./login.html, #top, javascript:) remain in WebView
+        if (!url.startsWith("http://") && !url.startsWith("https://")) {
+            return false
+        }
+
+        val uri = Uri.parse(url)
+        val host = (uri.host ?: "").lowercase()
+
+        // Download links (.apk files) should be handled by DownloadListener or in-app updater
+        if (url.endsWith(".apk") || url.contains("/releases/download/")) {
+            return false
+        }
+
+        // Internal platform navigation (GitHub Pages & Render live deployments) remains in WebView
+        if (host == HOST.lowercase() ||
+            host.endsWith("github.io") ||
+            host.endsWith("onrender.com") ||
+            host.contains("apexinnovators")) {
+            return false
+        }
+
+        // External URLs (GitHub repo, LinkedIn, Oracle, etc.) open in external browser
         try {
             startActivity(Intent(Intent.ACTION_VIEW, uri))
         } catch (e: Exception) {
