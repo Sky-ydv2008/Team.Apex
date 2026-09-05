@@ -10,22 +10,24 @@ export function initInteractiveGrid(canvasId = "hero-interactive-grid", opts = {
   const canvas = typeof canvasId === "string" ? document.getElementById(canvasId) : canvasId;
   if (!canvas) return;
 
-  const dotDistance = opts.dotDistance || 32;
-  const dotRadius = opts.dotRadius || 1.8;
-  const minProximity = opts.minProximity || 210;
+  const dotDistance = opts.dotDistance || 30;
+  const dotRadius = opts.dotRadius || 2;
+  const minProximity = opts.minProximity || 230;
   const minProxSq = minProximity * minProximity;
 
   let width = 0;
   let height = 0;
   let dots = [];
   let mouse = { x: -1000, y: -1000 };
-  let hue = 190;
+  let hue = 195;
   let animId = null;
 
   function resize() {
     const parent = canvas.parentElement;
-    width = canvas.width = parent ? parent.offsetWidth : window.innerWidth;
-    height = canvas.height = parent ? parent.offsetHeight : window.innerHeight;
+    const pW = parent ? parent.offsetWidth : 0;
+    const pH = parent ? parent.offsetHeight : 0;
+    width = canvas.width = Math.max(pW, window.innerWidth);
+    height = canvas.height = Math.max(pH, window.innerHeight, 500);
     createDots();
   }
 
@@ -70,22 +72,26 @@ export function initInteractiveGrid(canvasId = "hero-interactive-grid", opts = {
 
       if (distSq <= minProxSq) {
         const factor = 1 - distSq / minProxSq;
-        const brightness = Math.max(12, Math.round(60 - (distSq / minProxSq) * 45));
-        const color = `hsl(${hue}, 85%, ${brightness}%)`;
+        const brightness = Math.max(20, Math.round(75 - (distSq / minProxSq) * 55));
+        const color = `hsl(${hue}, 90%, ${brightness}%)`;
 
+        ctx.save();
         ctx.fillStyle = color;
+        ctx.shadowBlur = Math.round(10 * factor);
+        ctx.shadowColor = color;
         ctx.beginPath();
-        ctx.arc(dot.x, dot.y, dotRadius * (1 + factor * 0.5), 0, Math.PI * 2);
+        ctx.arc(dot.x, dot.y, dotRadius * (1 + factor * 0.7), 0, Math.PI * 2);
         ctx.fill();
 
-        ctx.strokeStyle = `hsla(${hue}, 85%, ${brightness}%, ${Math.max(0.15, factor * 0.6)})`;
-        ctx.lineWidth = 1;
+        ctx.strokeStyle = `hsla(${hue}, 90%, ${brightness}%, ${Math.max(0.2, factor * 0.75)})`;
+        ctx.lineWidth = 1.2;
         ctx.beginPath();
         ctx.moveTo(dot.x, dot.y);
         ctx.lineTo(mouse.x, mouse.y);
         ctx.stroke();
+        ctx.restore();
       } else {
-        ctx.fillStyle = "rgba(125, 211, 252, 0.12)";
+        ctx.fillStyle = "rgba(125, 211, 252, 0.2)";
         ctx.beginPath();
         ctx.arc(dot.x, dot.y, dotRadius, 0, Math.PI * 2);
         ctx.fill();
