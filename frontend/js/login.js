@@ -4,8 +4,8 @@
  * sending admins to the dashboard).
  */
 
-import { login, getUser } from "./auth.js?v=2";
-import { icon, esc, toast } from "./components.js?v=2";
+import { login, getUser } from "./auth.js";
+import { icon, esc, toast } from "./components.js";
 
 const form = document.getElementById("login-form");
 const alertHost = document.getElementById("login-alert");

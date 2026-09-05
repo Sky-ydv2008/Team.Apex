@@ -8,7 +8,7 @@
  *   redirect to login.html.
  */
 
-import { demoActive, demoFetch } from "./demo-data.js?v=2";
+import { demoActive, demoFetch } from "./demo-data.js";
 
 export const API_BASE = "/api";
 
@@ -50,10 +50,8 @@ const STATUS_TEXT = {
   503: "Service unavailable",
 };
 
-function loginPath() {
-  // Protected pages may live under /admin/ → login.html sits one level up.
-  const seg = window.location.pathname.split("/").filter(Boolean);
-  return seg.length > 0 && seg[0] === "admin" ? "../login.html" : "login.html";
+export function loginPath() {
+  return window.location.pathname.includes("/admin/") ? "../login.html" : "login.html";
 }
 
 export function clearSession() {

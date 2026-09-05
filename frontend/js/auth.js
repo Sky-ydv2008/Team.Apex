@@ -4,7 +4,7 @@
  * login / register / logout, and the admin role guard.
  */
 
-import { apiFetch, TOKEN_KEY, REFRESH_KEY, USER_KEY, redirectToLogin, ApiError } from "./api.js?v=2";
+import { apiFetch, TOKEN_KEY, REFRESH_KEY, USER_KEY, redirectToLogin, ApiError } from "./api.js";
 
 export { TOKEN_KEY, REFRESH_KEY, USER_KEY };
 
@@ -61,8 +61,7 @@ export async function register(name, email, password) {
 
 export async function logout() {
   clearSession();
-  const seg = window.location.pathname.split("/").filter(Boolean);
-  if (seg[0] === "admin") {
+  if (window.location.pathname.includes("/admin/")) {
     window.location.assign("../index.html");
   } else {
     window.location.assign(window.location.pathname);
@@ -71,8 +70,12 @@ export async function logout() {
 
 /** Home path depending on whether we are under /admin/. */
 export function homePath() {
-  const seg = window.location.pathname.split("/").filter(Boolean);
-  return seg[0] === "admin" ? "../index.html" : "index.html";
+  return window.location.pathname.includes("/admin/") ? "../index.html" : "index.html";
+}
+
+/** Login path depending on whether we are under /admin/. */
+export function loginPath() {
+  return window.location.pathname.includes("/admin/") ? "../login.html" : "login.html";
 }
 
 /**
@@ -92,7 +95,7 @@ export async function guardAdmin() {
     // Server unreachable: fall back to the stored session; guard still applies.
     user = getUser();
     if (!user) {
-      window.location.assign("login.html");
+      window.location.assign(loginPath());
       return null;
     }
   }
@@ -116,7 +119,10 @@ export async function guardModerator() {
   } catch (err) {
     if (err instanceof ApiError && err.status === 401) return null;
     user = getUser();
-    if (!user) { window.location.assign("login.html"); return null; }
+    if (!user) {
+      window.location.assign(loginPath());
+      return null;
+    }
   }
   if (!user || (user.role !== "ADMIN" && user.role !== "CORE_MEMBER")) {
     window.location.assign(homePath());

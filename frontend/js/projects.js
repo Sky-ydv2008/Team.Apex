@@ -4,7 +4,7 @@
  * GET /projects?page=&size=&q=&year=&tech=
  */
 
-import { apiFetch, errorMessage } from "./api.js?v=2";
+import { apiFetch, errorMessage } from "./api.js";
 import { mountLoading, mountData, mountEmpty, mountError, renderPagination, pageInfo, esc } from "./components.js";
 import { projectCardHTML } from "./cards.js";
 import { STATIC_TECH_NAMES } from "./static.js";
