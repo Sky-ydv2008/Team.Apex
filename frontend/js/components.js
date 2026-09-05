@@ -271,14 +271,63 @@ function currentPageName() {
 }
 
 /** Build the shared public navbar; `active` matches a link id. */
+export function initAnimeMascotNav(navContainer) {
+  if (!navContainer) return;
+  const activeLink = navContainer.querySelector(".anime-nav-link.active") || navContainer.querySelector(".admin-nav-link.active") || navContainer.querySelector(".nav-link.active");
+
+  let mascot = navContainer.querySelector(".anime-mascot");
+  if (!mascot) {
+    mascot = document.createElement("div");
+    mascot.className = "anime-mascot";
+    mascot.innerHTML = `
+      <div class="anime-mascot-head">
+        <div class="anime-mascot-eye left"></div>
+        <div class="anime-mascot-eye right"></div>
+        <div class="anime-mascot-blush left"></div>
+        <div class="anime-mascot-blush right"></div>
+        <div class="anime-mascot-mouth"></div>
+        <span class="anime-mascot-sparkle s1">✨</span>
+        <span class="anime-mascot-sparkle s2">✨</span>
+        <div class="anime-mascot-ear"></div>
+      </div>
+    `;
+    navContainer.appendChild(mascot);
+  }
+
+  function moveMascot(target) {
+    if (!target || !mascot) return;
+    const rect = target.getBoundingClientRect();
+    const parentRect = navContainer.getBoundingClientRect();
+    const leftPos = rect.left - parentRect.left + rect.width / 2;
+    mascot.style.left = `${leftPos}px`;
+  }
+
+  if (activeLink) moveMascot(activeLink);
+
+  const links = navContainer.querySelectorAll(".anime-nav-link, .admin-nav-link, .nav-link");
+  links.forEach((l) => {
+    l.addEventListener("mouseenter", () => moveMascot(l));
+    l.addEventListener("mouseleave", () => {
+      if (activeLink) moveMascot(activeLink);
+    });
+  });
+
+  window.addEventListener("resize", () => {
+    if (activeLink) moveMascot(activeLink);
+  });
+}
+
+/** Build the shared public navbar with Anime Navbar animations and mascot. */
 export function injectNav(active) {
   const root = document.getElementById("nav-root");
   if (!root) return;
   const current = active || root.dataset.active || document.body.dataset.page || "";
 
   const links = PUBLIC_LINKS.map((l) => {
-    const on = l.id === current ? ' class="nav-link active" aria-current="page"' : ' class="nav-link"';
-    return `<li><a${on} href="${l.href}">${esc(l.label)}</a></li>`;
+    const on = l.id === current;
+    const activeClass = on ? " anime-nav-link active" : " anime-nav-link";
+    const glow = on ? `<div class="anime-nav-active-glow"><div class="glow-blur-1"></div><div class="glow-blur-2"></div><div class="glow-shine"></div></div>` : "";
+    return `<li><a class="${activeClass}" href="${l.href}"${on ? ' aria-current="page"' : ""}>${glow}<span>${esc(l.label)}</span></a></li>`;
   }).join("");
 
   root.outerHTML = `<header class="site-header">
@@ -286,7 +335,9 @@ export function injectNav(active) {
     <div class="container nav-inner">
       ${brandBlock()}
       <nav class="nav-links" id="site-nav" aria-label="Primary navigation">
-        <ul class="nav-list">${links}</ul>
+        <div class="anime-nav-pill-container" id="anime-nav-root">
+          <ul class="nav-list" style="display:flex;gap:0.25rem;align-items:center;margin:0;padding:0;list-style:none;">${links}</ul>
+        </div>
         <div class="nav-actions" id="nav-actions"></div>
       </nav>
       <button class="nav-burger" id="nav-burger" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Toggle menu">
@@ -295,6 +346,9 @@ export function injectNav(active) {
       </button>
     </div>
   </header>`;
+
+  const navPill = document.getElementById("anime-nav-root");
+  if (navPill) initAnimeMascotNav(navPill);
 
   const burger = document.getElementById("nav-burger");
   const panel = document.getElementById("site-nav");
@@ -534,10 +588,13 @@ export function injectAdminShell(active, user) {
     aside.innerHTML = `
       <div class="admin-brand">${brandBlock()}<span class="badge b-admin">${user && user.role === "CORE_MEMBER" ? "Moderation" : "Admin"}</span></div>
       <p class="admin-nav-label">Manage</p>
-      <nav class="admin-nav" aria-label="Admin sections">${links}</nav>
+      <nav class="admin-nav anime-nav-pill-container" id="admin-nav-pill-root" aria-label="Admin sections" style="position:relative;flex-direction:column;align-items:stretch;background:transparent;border:none;box-shadow:none;padding:0.25rem 0.65rem;">${links}</nav>
       <div class="admin-side-foot">
         <a class="admin-nav-link" href="../index.html">${icon("globe")} View public site</a>
       </div>`;
+
+    const adminNavPill = document.getElementById("admin-nav-pill-root");
+    if (adminNavPill) initAnimeMascotNav(adminNavPill);
   }
 
   if (topbar) {
