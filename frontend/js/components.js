@@ -256,7 +256,7 @@ function logoPath() {
 }
 
 function brandMark() {
-  return `<img src="${logoPath()}" class="brand-mark-img" alt="Apex Logo" style="width:28px;height:28px;border-radius:50%;object-fit:cover;margin-right:0.45rem;vertical-align:middle;display:inline-block;box-shadow:0 0 10px rgba(34,211,238,0.35);border:1px solid rgba(34,211,238,0.4);" onerror="this.outerHTML='<svg class=\\'brand-mark\\' viewBox=\\'0 0 24 24\\' fill=\\'currentColor\\' aria-hidden=\\'true\\'>${ICONS.zap}</svg>'">`;
+  return `<img src="${logoPath()}" class="brand-mark-img" alt="Apex Logo" style="width:28px;height:28px;border-radius:50%;object-fit:cover;margin-right:0.45rem;vertical-align:middle;display:inline-block;box-shadow:0 0 10px rgba(34,211,238,0.35);border:1px solid rgba(34,211,238,0.4);" onerror="this.style.display='none'">`;
 }
 
 function brandBlock() {
