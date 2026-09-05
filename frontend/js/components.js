@@ -315,19 +315,69 @@ export function injectNav(active) {
   mountAuthUI();
 }
 
-/** Shared public footer. */
+export function initMagneticButtons() {
+  if (typeof document === "undefined") return;
+
+  document.querySelectorAll(".magnetic-btn").forEach((el) => {
+    if (el.dataset.magneticInited) return;
+    el.dataset.magneticInited = "true";
+
+    el.addEventListener("mousemove", (e) => {
+      const rect = el.getBoundingClientRect();
+      const h = rect.width / 2;
+      const w = rect.height / 2;
+      const x = (e.clientX - rect.left - h) * 0.35;
+      const y = (e.clientY - rect.top - w) * 0.35;
+
+      el.style.transform = `translate(${x}px, ${y}px) scale(1.05)`;
+      el.style.transition = "transform 0.15s ease-out";
+    });
+
+    el.addEventListener("mouseleave", () => {
+      el.style.transform = "translate(0px, 0px) scale(1)";
+      el.style.transition = "transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)";
+    });
+  });
+}
+
+/** Shared public footer with Cinematic Motion animations. */
 export function injectFooter() {
   const root = document.getElementById("footer-root");
   if (!root) return;
   const year = new Date().getFullYear();
-  root.outerHTML = `<footer class="site-footer">
-    <div class="container">
+
+  const marqueeText = `
+    <div style="display:inline-flex;align-items:center;gap:3rem;padding:0 1.5rem;">
+      <span>Accountability Redefined</span> <span style="color:#22d3ee;margin:0 0.5rem;">✦</span>
+      <span>Student Developer Squad</span> <span style="color:#a855f7;margin:0 0.5rem;">✦</span>
+      <span>Hackathon Archive</span> <span style="color:#22d3ee;margin:0 0.5rem;">✦</span>
+      <span>Parul Institute of Engineering & Technology</span> <span style="color:#a855f7;margin:0 0.5rem;">✦</span>
+      <span>Absolute Privacy</span> <span style="color:#22d3ee;margin:0 0.5rem;">✦</span>
+    </div>
+  `;
+
+  root.outerHTML = `<footer class="site-footer cinematic-footer-wrapper">
+    <div class="footer-aurora animate-footer-breathe"></div>
+    <div class="footer-bg-grid"></div>
+    <div class="footer-giant-bg-text">APEX INNOVATORS</div>
+
+    <!-- 1. Ticker Marquee Header -->
+    <div style="position:relative;z-index:10;width:100%;overflow:hidden;border-bottom:1px solid rgba(255,255,255,0.1);background:rgba(6,11,20,0.6);backdrop-filter:blur(12px);padding:0.75rem 0;transform:rotate(-1deg) scale(1.02);margin-bottom:2rem;">
+      <div class="animate-footer-scroll-marquee" style="font-size:0.8rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-2);">
+        ${marqueeText}
+        ${marqueeText}
+      </div>
+    </div>
+
+    <!-- 2. Main Footer Grid & Content -->
+    <div class="container" style="position:relative;z-index:10;">
       <div class="footer-grid">
         <div class="footer-brand">
           ${brandBlock()}
           <p class="footer-tag">A student developer team building software, competing in hackathons and growing a community of makers.</p>
           <span class="footer-institute">${icon("graduation")} Parul Institute of Engineering and Technology · Vadodara, India</span>
         </div>
+
         <nav class="footer-col" aria-label="Platform">
           <h4>Platform</h4>
           <ul>
@@ -338,6 +388,7 @@ export function injectFooter() {
             <li><a href="community.html">${icon("message")} Community</a></li>
           </ul>
         </nav>
+
         <nav class="footer-col" aria-label="Learn">
           <h4>Learn</h4>
           <ul>
@@ -345,25 +396,46 @@ export function injectFooter() {
             <li><a href="resources.html">${icon("book")} Resources</a></li>
             <li><a href="about.html">${icon("info")} About</a></li>
             <li><a href="contact.html">${icon("mail")} Contact</a></li>
-            ${isAppMode() ? "" : `<li><a href="https://github.com/Sky-ydv2008/Team.Apex/releases/download/v1.0.0/ApexInnovators.apk" download="ApexInnovators.apk" type="application/vnd.android.package-archive" data-app-download="true">${icon("smartphone")} Android App (APK)</a></li>`}
           </ul>
         </nav>
+
         <div class="footer-col">
-          <h4>Get involved</h4>
-          <div class="footer-cta">
-            <p>Want to build alongside us, or share your own project with the community?</p>
-            <a class="btn btn-primary btn-sm" href="register.html">Join the team</a>
-            <a class="btn btn-outline btn-sm" href="community.html">Explore community</a>
-            ${isAppMode() ? "" : `<a class="btn btn-outline btn-sm" href="https://github.com/Sky-ydv2008/Team.Apex/releases/download/v1.0.0/ApexInnovators.apk" download="ApexInnovators.apk" type="application/vnd.android.package-archive" data-app-download="true" style="color:#22d3ee;border-color:rgba(34,211,238,0.35);">${icon("download")} Download Android App</a>`}
+          <h4>Get Involved & Downloads</h4>
+          <div style="display:flex;flex-direction:column;gap:0.75rem;margin-top:0.5rem;">
+            ${isAppMode() ? "" : `<a class="footer-glass-pill magnetic-btn" href="https://github.com/Sky-ydv2008/Team.Apex/releases/download/v1.0.0/ApexInnovators.apk" download="ApexInnovators.apk" type="application/vnd.android.package-archive" data-app-download="true">
+              ${icon("smartphone")} <span>Download Android App</span>
+            </a>`}
+            ${isAppMode() ? "" : `<a class="footer-glass-pill magnetic-btn" href="https://github.com/Sky-ydv2008/Team.Apex/releases/download/v1.0.3/ApexInnovators-Windows.exe" download="ApexInnovators-Windows.exe" type="application/x-msdownload" data-app-download="true">
+              ${icon("dashboard")} <span>Download Windows App</span>
+            </a>`}
+            <a class="footer-glass-pill magnetic-btn" href="register.html" style="background:linear-gradient(135deg,rgba(34,211,238,0.2),rgba(168,85,247,0.2));border-color:rgba(34,211,238,0.4);color:#fff;">
+              ${icon("rocket")} <span>Join the Squad</span>
+            </a>
           </div>
         </div>
       </div>
-      <div class="footer-bottom">
-        <p>© ${year} Apex Innovators. Student developer team at Parul Institute of Engineering and Technology.</p>
-        <p><a href="#top">Back to top ${icon("arrow-right")}</a></p>
+
+      <!-- 3. Bottom Bar & Heartbeat Badge -->
+      <div style="position:relative;z-index:20;width:100%;padding:2rem 0 2.5rem;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:1.5rem;border-top:1px solid rgba(255,255,255,0.08);margin-top:2rem;">
+        <div style="color:var(--text-3);font-size:0.78rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;">
+          © ${year} Apex Innovators. All rights reserved.
+        </div>
+
+        <div class="footer-glass-pill" style="cursor:default;border-color:rgba(255,255,255,0.15);">
+          <span style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--text-3);">Crafted with</span>
+          <span class="animate-footer-heartbeat" style="color:#ef4444;font-size:1.1rem;margin:0 0.2rem;">❤</span>
+          <span style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--text-3);">by</span>
+          <span style="color:#fff;font-weight:900;font-size:0.85rem;margin-left:0.2rem;">Apex Innovators</span>
+        </div>
+
+        <button type="button" class="footer-glass-pill magnetic-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top" style="width:2.8rem;height:2.8rem;padding:0;justify-content:center;border-radius:50%;">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+        </button>
       </div>
     </div>
   </footer>`;
+
+  initMagneticButtons();
 }
 
 /** Render session-aware controls into #nav-actions (run after injectNav). */
@@ -510,7 +582,76 @@ export function injectAdminShell(active, user) {
       a.addEventListener("click", () => aside.classList.remove("open"));
     });
   }
-}
+
+  // Inject Admin Cinematic Motion Footer
+  const mainCol = document.querySelector(".admin-main");
+  if (mainCol && !document.getElementById("admin-footer-root")) {
+    const adminFooter = document.createElement("footer");
+    adminFooter.id = "admin-footer-root";
+    adminFooter.className = "cinematic-footer-wrapper";
+    adminFooter.style.marginTop = "auto";
+    adminFooter.style.borderTop = "1px solid rgba(255,255,255,0.08)";
+
+    const adminMarquee = `
+      <div style="display:inline-flex;align-items:center;gap:3rem;padding:0 1.5rem;">
+        <span>ADMIN CONTROL</span> <span style="color:#a855f7;margin:0 0.5rem;">✦</span>
+        <span>CONTENT MODERATION</span> <span style="color:#22d3ee;margin:0 0.5rem;">✦</span>
+        <span>USER MANAGEMENT</span> <span style="color:#a855f7;margin:0 0.5rem;">✦</span>
+        <span>AUDIT TRAIL</span> <span style="color:#22d3ee;margin:0 0.5rem;">✦</span>
+        <span>APEX PLATFORM</span> <span style="color:#a855f7;margin:0 0.5rem;">✦</span>
+      </div>
+    `;
+
+    adminFooter.innerHTML = `
+      <div class="footer-aurora animate-footer-breathe" style="opacity:0.4;"></div>
+      <div class="footer-bg-grid"></div>
+      <div class="footer-giant-bg-text" style="font-size:16vw;">APEX ADMIN</div>
+
+      <div style="position:relative;z-index:10;width:100%;overflow:hidden;border-bottom:1px solid rgba(255,255,255,0.08);background:rgba(6,11,20,0.6);backdrop-filter:blur(12px);padding:0.6rem 0;transform:rotate(-1deg) scale(1.02);margin-bottom:1.5rem;">
+        <div class="animate-footer-scroll-marquee" style="font-size:0.75rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-3);">
+          ${adminMarquee}
+          ${adminMarquee}
+        </div>
+      </div>
+
+      <div class="container" style="position:relative;z-index:10;padding-bottom:1.5rem;">
+        <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:1rem;">
+          <div style="display:flex;align-items:center;gap:0.75rem;">
+            ${brandBlock()}
+            <span class="badge b-admin">${user && user.role === "CORE_MEMBER" ? "Moderation" : "Admin Panel"}</span>
+          </div>
+
+          <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+            <a href="dashboard.html" class="footer-glass-pill magnetic-btn" style="padding:0.4rem 0.9rem;font-size:0.8rem;">${icon("dashboard")} Dashboard</a>
+            <a href="projects.html" class="footer-glass-pill magnetic-btn" style="padding:0.4rem 0.9rem;font-size:0.8rem;">${icon("code")} Projects</a>
+            <a href="posts.html" class="footer-glass-pill magnetic-btn" style="padding:0.4rem 0.9rem;font-size:0.8rem;">${icon("message")} Posts</a>
+            <a href="users.html" class="footer-glass-pill magnetic-btn" style="padding:0.4rem 0.9rem;font-size:0.8rem;">${icon("users")} Users</a>
+            <a href="../index.html" class="footer-glass-pill magnetic-btn" style="padding:0.4rem 0.9rem;font-size:0.8rem;border-color:rgba(34,211,238,0.3);color:#7dd3fc;">${icon("globe")} View Public Site</a>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:1rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,0.06);">
+          <div style="color:var(--text-3);font-size:0.75rem;">
+            © ${new Date().getFullYear()} Apex Innovators Admin Environment. Secure Session.
+          </div>
+
+          <div class="footer-glass-pill" style="cursor:default;padding:0.35rem 0.85rem;border-color:rgba(255,255,255,0.1);">
+            <span style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-3);">Crafted with</span>
+            <span class="animate-footer-heartbeat" style="color:#ef4444;font-size:0.95rem;margin:0 0.15rem;">❤</span>
+            <span style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-3);">by</span>
+            <span style="color:#fff;font-weight:900;font-size:0.8rem;margin-left:0.15rem;">Apex Innovators</span>
+          </div>
+
+          <button type="button" class="footer-glass-pill magnetic-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top" style="width:2.4rem;height:2.4rem;padding:0;justify-content:center;border-radius:50%;">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+          </button>
+        </div>
+      </div>
+    `;
+
+    mainCol.appendChild(adminFooter);
+    initMagneticButtons();
+  }
 
 /* ================= Toast ================= */
 const TOAST_ICONS = { success: "check", error: "alert", warning: "alert", info: "info" };

@@ -1917,3 +1917,137 @@ class-auth-placeholder {}
   padding: 2.5rem;
   z-index: 2;
 }
+
+/* ================= Cinematic Motion Footer ================= */
+.cinematic-footer-wrapper {
+  position: relative;
+  font-family: 'Plus Jakarta Sans', 'Inter', var(--font-body), sans-serif;
+  -webkit-font-smoothing: antialiased;
+  background: var(--bg-0, #060b14);
+  color: var(--text, #f8fafc);
+  overflow: hidden;
+  border-top: 1px solid rgba(34, 211, 238, 0.15);
+  margin-top: 3.5rem;
+}
+
+@keyframes footer-breathe {
+  0% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+  100% { transform: translate(-50%, -50%) scale(1.15); opacity: 0.85; }
+}
+
+@keyframes footer-scroll-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes footer-heartbeat {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 5px rgba(239, 68, 68, 0.5)); }
+  15%, 45% { transform: scale(1.25); filter: drop-shadow(0 0 12px rgba(239, 68, 68, 0.85)); }
+  30% { transform: scale(1); }
+}
+
+.animate-footer-breathe {
+  animation: footer-breathe 8s ease-in-out infinite alternate;
+}
+
+.animate-footer-scroll-marquee {
+  animation: footer-scroll-marquee 35s linear infinite;
+  display: flex;
+  white-space: nowrap;
+  width: max-content;
+}
+
+.animate-footer-heartbeat {
+  animation: footer-heartbeat 2s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+  display: inline-block;
+}
+
+/* Theme-adaptive Grid Background */
+.footer-bg-grid {
+  position: absolute;
+  inset: 0;
+  background-size: 60px 60px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  mask-image: linear-gradient(to bottom, transparent, black 30%, black 70%, transparent);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 30%, black 70%, transparent);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Theme-adaptive Aurora Glow */
+.footer-aurora {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 80vw;
+  height: 60vh;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(
+    circle at 50% 50%, 
+    rgba(34, 211, 238, 0.15) 0%, 
+    rgba(168, 85, 247, 0.15) 40%, 
+    transparent 70%
+  );
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Glass Pill Theming */
+.footer-glass-pill {
+  background: linear-gradient(145deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.4) 100%);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  color: var(--text-2, #cbd5e1);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  padding: 0.65rem 1.25rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 0.88rem;
+}
+
+.footer-glass-pill:hover {
+  background: linear-gradient(145deg, rgba(51, 65, 85, 0.7) 0%, rgba(30, 41, 59, 0.5) 100%);
+  border-color: rgba(34, 211, 238, 0.4);
+  box-shadow: 0 20px 40px -10px rgba(34, 211, 238, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+}
+
+/* Giant Background Text Masking */
+.footer-giant-bg-text {
+  position: absolute;
+  bottom: -2vh;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 20vw;
+  line-height: 0.75;
+  font-weight: 900;
+  letter-spacing: -0.05em;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.05);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+  z-index: 1;
+}
+
+/* Metallic Text Glow */
+.footer-text-glow {
+  background: linear-gradient(180deg, #ffffff 0%, rgba(203, 213, 225, 0.6) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0px 0px 20px rgba(34, 211, 238, 0.25));
+}
