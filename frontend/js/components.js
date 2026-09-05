@@ -252,7 +252,7 @@ const PUBLIC_LINKS = [
 ];
 
 function brandMark() {
-  return `<svg class="brand-mark" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">${ICONS.zap}</svg>`;
+  return `<img src="logo.png" class="brand-mark-img" alt="Apex Logo" style="width:26px;height:26px;border-radius:50%;object-fit:contain;margin-right:0.4rem;vertical-align:middle;display:inline-block;" onerror="this.style.display='none'">`;
 }
 
 function brandBlock() {
