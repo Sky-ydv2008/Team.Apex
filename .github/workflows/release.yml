@@ -1,0 +1,119 @@
+name: Build & Release Apex Innovators Apps (Android + Windows)
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-android:
+    name: Build Android APKs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Grant execute permission for gradlew
+        run: |
+          sed -i 's/\r$//' android/gradlew
+          chmod +x android/gradlew
+
+      - name: Build Android APKs
+        working-directory: android
+        run: ./gradlew assembleClientDebug assembleAdminDebug --no-daemon --stacktrace
+
+      - name: Prepare Android Release Artifacts
+        run: |
+          cp android/app/build/outputs/apk/client/debug/app-client-debug.apk ApexInnovators.apk
+          cp android/app/build/outputs/apk/admin/debug/app-admin-debug.apk ApexAdmin.apk
+
+      - name: Upload Android Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-apks
+          path: |
+            ApexInnovators.apk
+            ApexAdmin.apk
+
+  build-windows:
+    name: Build Windows Executables
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Compile Windows Executables
+        working-directory: windows
+        run: |
+          C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe /target:winexe /win32icon:app.ico /out:ApexInnovators-Windows.exe ApexInnovators.cs
+          C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe /target:winexe /win32icon:admin.ico /out:ApexAdmin-Windows.exe ApexAdmin.cs
+
+      - name: Upload Windows Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-exes
+          path: |
+            windows/ApexInnovators-Windows.exe
+            windows/ApexAdmin-Windows.exe
+
+  publish-release:
+    name: Publish All Assets to GitHub Release
+    needs: [build-android, build-windows]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download Android Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: android-apks
+
+      - name: Download Windows Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: windows-exes
+          path: windows
+
+      - name: Publish Unified Release to GitHub
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.3
+          name: Apex Innovators Apps v1.0.3
+          make_latest: true
+          body: |
+            ### Apex Innovators Platform Release v1.0.3
+
+            #### Android Applications (.apk)
+            1. **ApexInnovators.apk** — Public application for student developers & community.
+            2. **ApexAdmin.apk** — Admin & Core Team management application.
+
+            #### Windows Applications (.exe)
+            1. **ApexInnovators-Windows.exe** — Standalone Windows desktop app.
+            2. **ApexAdmin-Windows.exe** — Admin & Core Team Windows desktop app.
+          files: |
+            ApexInnovators.apk
+            ApexAdmin.apk
+            windows/ApexInnovators-Windows.exe
+            windows/ApexAdmin-Windows.exe
