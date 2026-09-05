@@ -78,8 +78,10 @@ class MainActivity : AppCompatActivity() {
 
         // User agent branding
         val appVariant = if (BuildConfig.IS_ADMIN_APP) "ApexAdminAndroid/1.0.0" else "ApexInnovatorsAndroid/1.0.0"
-        settings.userAgentString = settings.userAgentString + " " + appVariant
+        settings.userAgentString = settings.userAgentString + " " + appVariant + " ApexInnovators"
 
+        // JavaScript interface for explicit app detection in frontend
+        webView.addJavascriptInterface(WebAppInterface(), "ApexAndroid")
         // Cache policy: use cache if network is unavailable
         settings.cacheMode = if (isNetworkConnected()) {
             WebSettings.LOAD_DEFAULT
@@ -103,15 +105,16 @@ class MainActivity : AppCompatActivity() {
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                 super.onPageStarted(view, url, favicon)
                 binding.progressBar.visibility = View.VISIBLE
+                view?.evaluateJavascript("window.isApexApp = true; if (typeof applyAppModeDOM === 'function') applyAppModeDOM();", null)
             }
 
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
                 binding.progressBar.visibility = View.GONE
                 binding.swipeRefresh.isRefreshing = false
+                view?.evaluateJavascript("window.isApexApp = true; if (typeof applyAppModeDOM === 'function') applyAppModeDOM();", null)
                 showWebView()
             }
-
             override fun onReceivedError(
                 view: WebView?,
                 request: WebResourceRequest?,
@@ -337,5 +340,13 @@ class MainActivity : AppCompatActivity() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         binding.webView.saveState(outState)
+    }
+
+    inner class WebAppInterface {
+        @JavascriptInterface
+        fun isApp(): Boolean = true
+
+        @JavascriptInterface
+        fun getAppVersion(): String = "1.0.0"
     }
 }

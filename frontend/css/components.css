@@ -1711,3 +1711,12 @@ table.table .num { font-family: var(--font-mono); font-size: 0.84rem; }
 .value-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-4); }
 
 .quote-mark { color: var(--acc); font-family: var(--font-display); }
+
+/* ================= App mode overrides ================= */
+body.is-app-mode #demo-banner,
+body.is-app-mode [data-app-download],
+body.is-app-mode [data-app-download-card],
+body.is-app-mode .app-download-btn,
+body.is-app-mode a[href*="ApexInnovators.apk"] {
+  display: none !important;
+}

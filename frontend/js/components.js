@@ -69,6 +69,32 @@ export function icon(name, cls = "") {
 }
 
 /* ================= Formatting helpers ================= */
+export function isAppMode() {
+  try {
+    if (typeof window === "undefined") return false;
+    const ua = (navigator.userAgent || navigator.vendor || window.opera || "").toLowerCase();
+    const isAndroidApp =
+      ua.includes("apexinnovatorsandroid") ||
+      ua.includes("apexadminandroid") ||
+      ua.includes("apexinnovators") ||
+      ua.includes("apexadmin") ||
+      window.ApexAndroid !== undefined ||
+      window.isApexApp === true;
+
+    const isStandalone =
+      (window.matchMedia &&
+        (window.matchMedia("(display-mode: standalone)").matches ||
+          window.matchMedia("(display-mode: fullscreen)").matches ||
+          window.matchMedia("(display-mode: minimal-ui)").matches)) ||
+      navigator.standalone === true ||
+      (document.referrer && document.referrer.includes("android-app://"));
+
+    return Boolean(isAndroidApp || isStandalone);
+  } catch (e) {
+    return false;
+  }
+}
+
 export function esc(value) {
   return String(value ?? "")
     .replace(/&/g, "&amp;")
@@ -86,6 +112,29 @@ export function humanize(value) {
     .replace(/^./, (c) => c.toUpperCase());
 }
 
+export function applyAppModeDOM() {
+  if (!isAppMode()) return;
+  if (document.body) {
+    document.body.classList.add("is-app-mode");
+  }
+  const banner = document.getElementById("demo-banner");
+  if (banner) banner.remove();
+
+  const selectors = [
+    'a[href*="ApexInnovators.apk"]',
+    'a[href*="/releases/download/"]',
+    '[data-app-download]',
+    '[data-app-download-card]',
+    '.app-download-btn',
+  ];
+  document.querySelectorAll(selectors.join(",")).forEach((el) => {
+    const li = el.closest("li");
+    if (li && li.children.length === 1) {
+      li.style.display = "none";
+    }
+    el.style.display = "none";
+  });
+}
 export function initials(name) {
   const parts = String(name || "?").trim().split(/\s+/).filter(Boolean);
   if (!parts.length) return "?";
@@ -292,7 +341,8 @@ export function injectFooter() {
             <li><a href="resources.html">${icon("book")} Resources</a></li>
             <li><a href="about.html">${icon("info")} About</a></li>
             <li><a href="contact.html">${icon("mail")} Contact</a></li>
-            <li><a href="https://github.com/Sky-ydv2008/Team.Apex/releases/download/v1.0.0/ApexInnovators.apk" download>${icon("smartphone")} Android App (APK)</a></li>
+            ${isAppMode() ? "" : `<li><a href="https://github.com/Sky-ydv2008/Team.Apex/releases/download/v1.0.0/ApexInnovators.apk" download data-app-download="true">${icon("smartphone")} Android App (APK)</a></li>`}
+          </ul>
         </nav>
         <div class="footer-col">
           <h4>Get involved</h4>
@@ -300,7 +350,7 @@ export function injectFooter() {
             <p>Want to build alongside us, or share your own project with the community?</p>
             <a class="btn btn-primary btn-sm" href="register.html">Join the team</a>
             <a class="btn btn-outline btn-sm" href="community.html">Explore community</a>
-            <a class="btn btn-outline btn-sm" href="https://github.com/Sky-ydv2008/Team.Apex/releases/download/v1.0.0/ApexInnovators.apk" download style="color:#22d3ee;border-color:rgba(34,211,238,0.35);">${icon("download")} Download Android App</a>
+            ${isAppMode() ? "" : `<a class="btn btn-outline btn-sm" href="https://github.com/Sky-ydv2008/Team.Apex/releases/download/v1.0.0/ApexInnovators.apk" download data-app-download="true" style="color:#22d3ee;border-color:rgba(34,211,238,0.35);">${icon("download")} Download Android App</a>`}
           </div>
         </div>
       </div>
@@ -326,7 +376,7 @@ export function mountAuthUI() {
   const page = currentPageName();
   const here = (target) => page === target;
 
-  const appBtn = `<a class="btn btn-sm btn-outline" href="https://github.com/Sky-ydv2008/Team.Apex/releases/download/v1.0.0/ApexInnovators.apk" download title="Download Android App" style="border-color:rgba(34,211,238,0.35);color:#22d3ee;display:inline-flex;align-items:center;gap:0.35rem;">${icon("smartphone")} <span>App</span></a>`;
+  const appBtn = isAppMode() ? "" : `<a class="btn btn-sm btn-outline" href="https://github.com/Sky-ydv2008/Team.Apex/releases/download/v1.0.0/ApexInnovators.apk" download data-app-download="true" title="Download Android App" style="border-color:rgba(34,211,238,0.35);color:#22d3ee;display:inline-flex;align-items:center;gap:0.35rem;">${icon("smartphone")} <span>App</span></a>`;
   if (!user || !localStorage.getItem("ai_token")) {
     const loginBtn = here("login.html")
       ? ""
@@ -675,6 +725,8 @@ export function pageInfo(pageObj) {
 
 /* ================= Auto-init ================= */
 function mountDemoBanner() {
+  if (isAppMode()) return;
+  if (!demoActive()) return;
   if (!document.body || document.getElementById("demo-banner")) return;
   const b = document.createElement("div");
   b.id = "demo-banner";
@@ -685,10 +737,15 @@ function mountDemoBanner() {
 }
 
 function autoInit() {
-  if (demoActive()) mountDemoBanner();
+  if (isAppMode()) {
+    applyAppModeDOM();
+  } else if (demoActive()) {
+    mountDemoBanner();
+  }
   if (document.getElementById("nav-root")) injectNav();
   if (document.getElementById("footer-root")) injectFooter();
   if (document.getElementById("nav-actions")) mountAuthUI();
+  applyAppModeDOM();
 }
 
 if (document.readyState === "loading") {
