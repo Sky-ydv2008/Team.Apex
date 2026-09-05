@@ -44,10 +44,16 @@ public class SecurityConfig {
                                 "/",
                                 "/index.html",
                                 "/*.html",
+                                "/*.xml",
+                                "/*.txt",
+                                "/*.png",
+                                "/*.svg",
+                                "/*.json",
                                 "/admin/*.html",
                                 "/css/**",
                                 "/js/**",
                                 "/images/**",
+                                "/downloads/**",
                                 "/favicon*"
                         ).permitAll()
                         .requestMatchers(
