@@ -186,8 +186,9 @@ class MainActivity : AppCompatActivity() {
     private fun handleUrl(url: String): Boolean {
         val uri = Uri.parse(url)
 
-        // Internal platform navigation remains in WebView
-        if (uri.host == HOST || (uri.scheme == "https" && uri.host?.contains("apexinnovators") == true)) {
+        // Internal platform navigation (GitHub Pages & Render live deployments) remains in WebView
+        val host = uri.host ?: ""
+        if (host == HOST || host.endsWith("onrender.com") || host.contains("apexinnovators")) {
             return false
         }
 
