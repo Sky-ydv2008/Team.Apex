@@ -99,11 +99,11 @@ jobs:
       - name: Publish Unified Release to GitHub
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v1.0.3
-          name: Apex Innovators Apps v1.0.3
+          tag_name: v1.0.4
+          name: Apex Innovators Apps v1.0.4
           make_latest: true
           body: |
-            ### Apex Innovators Platform Release v1.0.3
+            ### Apex Innovators Platform Release v1.0.4
 
             #### Android Applications (.apk)
             1. **ApexInnovators.apk** — Public application for student developers & community.

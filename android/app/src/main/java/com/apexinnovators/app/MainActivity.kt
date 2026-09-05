@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity() {
         val webView = binding.webView
         val settings = webView.settings
 
-        // Enable JavaScript, DOM storage (required for localStorage sessions), and database
+        // Enable JavaScript, DOM storage, database, and GPU Hardware Acceleration for smooth animations
         settings.javaScriptEnabled = true
         settings.domStorageEnabled = true
         settings.databaseEnabled = true
@@ -76,7 +76,7 @@ class MainActivity : AppCompatActivity() {
         settings.useWideViewPort = true
         settings.loadWithOverviewMode = true
         settings.setSupportZoom(false)
-
+        webView.setLayerType(View.LAYER_TYPE_HARDWARE, null)
         // User agent branding
         val appVariant = if (BuildConfig.IS_ADMIN_APP) "ApexAdminAndroid/1.0.0" else "ApexInnovatorsAndroid/1.0.0"
         settings.userAgentString = settings.userAgentString + " " + appVariant + " ApexInnovators"
