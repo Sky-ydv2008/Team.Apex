@@ -17,8 +17,8 @@ const GITHUB_STORAGE_KEY = "projectforge_github_connection";
 
 const DEFAULT_DEMO_GITHUB: GitHubConnectionState = {
   isConnected: true,
-  username: "alex-chen-dev",
-  avatarUrl: "https://avatars.githubusercontent.com/u/583231?v=4",
+  username: "Sky-ydv2008",
+  avatarUrl: "https://avatars.githubusercontent.com/u/Sky-ydv2008?v=4",
   scopes: ["repo", "user", "workflow"],
   connectedAt: new Date().toISOString(),
 };
@@ -62,8 +62,8 @@ export function GitHubProvider({ children }: { children: React.ReactNode }) {
           if (data && !error) {
             const state: GitHubConnectionState = {
               isConnected: true,
-              username: data.provider_user_id || "authenticated-student",
-              avatarUrl: `https://api.dicebear.com/7.x/identicon/svg?seed=${data.provider_user_id}`,
+              username: data.provider_user_id || "Sky-ydv2008",
+              avatarUrl: `https://avatars.githubusercontent.com/u/${data.provider_user_id || 'Sky-ydv2008'}`,
               scopes: data.scopes || ["repo", "user"],
               connectedAt: data.created_at,
             };
@@ -75,7 +75,7 @@ export function GitHubProvider({ children }: { children: React.ReactNode }) {
         }
       }
 
-      // Auto-connect demo account in Demo Mode
+      // Auto-connect real account in Demo Mode
       setGithubState(DEFAULT_DEMO_GITHUB);
       localStorage.setItem(GITHUB_STORAGE_KEY, JSON.stringify(DEFAULT_DEMO_GITHUB));
       setLoading(false);
@@ -92,12 +92,10 @@ export function GitHubProvider({ children }: { children: React.ReactNode }) {
   const connectGithub = async () => {
     const clientId = process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID;
     if (!clientId) {
-      // Fallback to Demo GitHub connect
       connectDemoGithub();
       return;
     }
 
-    // Redirect to real GitHub OAuth page
     const redirectUri = `${window.location.origin}/api/integrations/github/callback`;
     const scope = "repo user workflow";
     window.location.href = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scope)}`;
