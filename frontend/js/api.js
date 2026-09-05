@@ -125,6 +125,10 @@ export async function apiFetch(path, opts = {}) {
       body: body !== undefined ? JSON.stringify(body) : undefined,
     });
   } catch (err) {
+    if (demoActive() || window.location.hostname.endsWith("github.io") || window.location.protocol === "file:") {
+      const fallback = demoFetch(method, path, params, body);
+      if (fallback && !fallback.__demoError) return fallback;
+    }
     throw new ApiError(0, {
       status: 0,
       message: "Network error — the server could not be reached. Check that the backend is running.",
@@ -132,7 +136,6 @@ export async function apiFetch(path, opts = {}) {
       path: url.pathname,
     }, url.pathname);
   }
-
   // 204 No Content
   if (response.status === 204) return null;
 
@@ -143,6 +146,10 @@ export async function apiFetch(path, opts = {}) {
   }
 
   if (!response.ok) {
+    if ((demoActive() || window.location.hostname.endsWith("github.io")) && method === "GET") {
+      const fallback = demoFetch(method, path, params, body);
+      if (fallback && !fallback.__demoError) return fallback;
+    }
     const normalized = {
       status: response.status,
       message: (payload && typeof payload.message === "string" && payload.message)

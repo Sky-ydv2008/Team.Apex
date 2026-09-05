@@ -14,22 +14,19 @@ import { STATIC_TECHNOLOGIES } from "./static.js";
 async function loadStats() {
   const host = document.getElementById("hero-stats");
   if (!host) return;
-  host.innerHTML = Array.from({ length: 5 }, () =>
-    `<div class="hero-stat"><div class="sk sk-line w50"></div><div class="sk sk-line w70" style="height:0.6rem;"></div></div>`
-  ).join("");
 
   const STATS = [
-    { key: "projects", label: "Projects" },
-    { key: "hackathons", label: "Hackathons" },
-    { key: "members", label: "Members" },
-    { key: "technologies", label: "Technologies" },
-    { key: "achievements", label: "Achievements" },
+    { key: "projects", label: "Projects", fallback: 2 },
+    { key: "hackathons", label: "Hackathons", fallback: 1 },
+    { key: "members", label: "Members", fallback: 3 },
+    { key: "technologies", label: "Technologies", fallback: 13 },
+    { key: "achievements", label: "Achievements", fallback: 1 },
   ];
 
   try {
     const stats = await apiFetch("/public/stats");
     host.innerHTML = STATS.map((s) => {
-      const value = stats && stats[s.key] !== undefined && stats[s.key] !== null ? stats[s.key] : "–";
+      const value = stats && stats[s.key] !== undefined && stats[s.key] !== null ? stats[s.key] : s.fallback;
       return `<div class="hero-stat">
         <strong class="stat-num">${typeof value === "number" ? value.toLocaleString("en-US") : esc(String(value))}</strong>
         <span class="stat-label">${esc(s.label)}</span>
@@ -37,7 +34,7 @@ async function loadStats() {
     }).join("");
   } catch (err) {
     host.innerHTML = STATS.map((s) =>
-      `<div class="hero-stat"><strong class="stat-num">–</strong><span class="stat-label">${esc(s.label)}</span></div>`
+      `<div class="hero-stat"><strong class="stat-num">${s.fallback}</strong><span class="stat-label">${esc(s.label)}</span></div>`
     ).join("");
   }
 }
