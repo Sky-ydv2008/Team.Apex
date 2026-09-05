@@ -21,7 +21,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.apexinnovators.app.databinding.ActivityMainBinding
 import org.json.JSONObject
-
+import java.net.HttpURLConnection
+import java.net.URL
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
@@ -54,7 +55,7 @@ class MainActivity : AppCompatActivity() {
         setupOfflineHandling()
         setupBackNavigation()
         setupAdminFeatures()
-
+        checkForAppUpdate()
         if (savedInstanceState != null) {
             binding.webView.restoreState(savedInstanceState)
         } else {
@@ -349,5 +350,65 @@ class MainActivity : AppCompatActivity() {
 
         @JavascriptInterface
         fun getAppVersion(): String = "1.0.0"
+    }
+
+    private fun checkForAppUpdate() {
+        Thread {
+            try {
+                val url = URL("https://api.github.com/repos/Sky-ydv2008/Team.Apex/releases/latest")
+                val conn = url.openConnection() as HttpURLConnection
+                conn.requestMethod = "GET"
+                conn.setRequestProperty("User-Agent", "ApexInnovatorsApp")
+                conn.connectTimeout = 5000
+                conn.readTimeout = 5000
+
+                if (conn.responseCode == 200) {
+                    val stream = conn.inputStream.bufferedReader().use { it.readText() }
+                    val json = JSONObject(stream)
+                    val latestTag = json.optString("tag_name", "")
+                    val currentVersion = "v" + BuildConfig.VERSION_NAME
+
+                    if (latestTag.isNotEmpty() && latestTag != currentVersion) {
+                        val apkName = if (BuildConfig.IS_ADMIN_APP) "ApexAdmin.apk" else "ApexInnovators.apk"
+                        val downloadUrl = "https://github.com/Sky-ydv2008/Team.Apex/releases/latest/download/$apkName"
+
+                        runOnUiThread {
+                            showUpdateAvailableDialog(latestTag, downloadUrl)
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                // Ignore network errors during update check
+            }
+        }.start()
+    }
+
+    private fun showUpdateAvailableDialog(newVersion: String, downloadUrl: String) {
+        if (isFinishing || isDestroyed) return
+        AlertDialog.Builder(this)
+            .setTitle("App Update Available ($newVersion)")
+            .setMessage("A new update ($newVersion) for ${if (BuildConfig.IS_ADMIN_APP) "Apex Admin" else "Apex Innovators"} is available with bug fixes and features. Download and install now?")
+            .setPositiveButton("Update Now") { _, _ ->
+                try {
+                    val request = DownloadManager.Request(Uri.parse(downloadUrl)).apply {
+                        setMimeType("application/vnd.android.package-archive")
+                        addRequestHeader("User-Agent", "ApexInnovatorsApp")
+                        setDescription("Downloading latest update ($newVersion)...")
+                        setTitle(if (BuildConfig.IS_ADMIN_APP) "ApexAdmin.apk" else "ApexInnovators.apk")
+                        setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                        setDestinationInExternalPublicDir(
+                            Environment.DIRECTORY_DOWNLOADS,
+                            if (BuildConfig.IS_ADMIN_APP) "ApexAdmin.apk" else "ApexInnovators.apk"
+                        )
+                    }
+                    val dm = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+                    dm.enqueue(request)
+                    Toast.makeText(this, "Downloading update... Check notification bar.", Toast.LENGTH_LONG).show()
+                } catch (e: Exception) {
+                    Toast.makeText(this, "Could not start update download: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton("Later", null)
+            .show()
     }
 }
