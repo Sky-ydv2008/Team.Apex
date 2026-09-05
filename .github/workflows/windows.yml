@@ -1,0 +1,55 @@
+name: Build Windows Desktop Applications
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'windows/**'
+      - '.github/workflows/windows.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build Windows Desktop Executables
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Compile Windows Executables
+        working-directory: windows
+        run: |
+          C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe /target:winexe /out:ApexInnovators-Windows.exe ApexInnovators.cs
+          C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe /target:winexe /out:ApexAdmin-Windows.exe ApexAdmin.cs
+
+      - name: Upload Client Windows Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ApexInnovators-Windows-EXE
+          path: windows/ApexInnovators-Windows.exe
+          if-no-files-found: error
+
+      - name: Upload Admin Windows Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ApexAdmin-Windows-EXE
+          path: windows/ApexAdmin-Windows.exe
+          if-no-files-found: error
+
+      - name: Publish to GitHub Release
+        uses: softprops/action-gh-release@v2
+        if: github.ref == 'refs/heads/main'
+        with:
+          tag_name: v1.0.1
+          name: Apex Innovators Apps v1.0.1
+          files: |
+            windows/ApexInnovators-Windows.exe
+            windows/ApexAdmin-Windows.exe
