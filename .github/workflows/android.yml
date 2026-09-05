@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'android/**'
-      - '.github/workflows/android.yml'
   workflow_dispatch:
 
 permissions:
@@ -67,6 +64,7 @@ jobs:
         with:
           tag_name: v1.0.2
           name: Apex Innovators Android Apps v1.0.2
+          make_latest: true
           body: |
             ### Apex Innovators Android Applications
 
