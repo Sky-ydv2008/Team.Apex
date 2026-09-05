@@ -1,19 +1,15 @@
-# Apex Innovators — Team Platform
+# [Apex Innovators](https://sky-ydv2008.github.io/Team.Apex/) — Student Developer Team Platform
 
-A living digital home for the **Apex Innovators** student developer team (Parul Institute of Engineering and Technology): a **portfolio + hackathon archive + project showcase + community platform** where every project tells a story — idea → research → build → hackathon → result → learnings.
+[![Apex Innovators Website](https://img.shields.io/badge/Apex%20Innovators-Live%20Platform-22d3ee?style=for-the-badge&logo=react)](https://sky-ydv2008.github.io/Team.Apex/)
+[![Render Live API](https://img.shields.io/badge/Render%20Live-Single%20Origin-a855f7?style=for-the-badge&logo=render)](https://apex-innovators.onrender.com/)
 
-**Live preview (GitHub Pages, no backend):** https://sky-ydv2008.github.io/Team.Apex/ — the
-public site renders built-in sample data (see `frontend/js/demo-data.js`) so the portfolio,
-hackathon archive and community feed can be viewed anywhere. Accounts, posting and the
-admin panel require the full stack below. The frontend auto-switches to demo mode when no
-API is present (GitHub Pages / `file://` / `?demo=1`).
+A living digital home for [**Apex Innovators**](https://sky-ydv2008.github.io/Team.Apex/) student developer team at Parul Institute of Engineering and Technology: a **portfolio + AI skill evaluation + hackathon archive + project showcase + community platform** where every project tells a story — idea → research → build → hackathon → result → learnings.
 
-**Full app on Render (accounts + admin, one-click):** this repo ships a `render.yaml`
-blueprint and `backend/Dockerfile` (frontend and API in one image, linked Postgres,
-demo content seeded on first boot). Deploy at https://render.com → **New+ → Blueprint** →
-connect this repository → **Apply**. Default login after deploy: `apex.innovator.team@gmail.com`
-/ `Apex@Shivam` (see `database/seed.sql`; change it in the admin panel afterwards).
-
+### 🌐 Official Platform Links
+- **Official Website**: [https://sky-ydv2008.github.io/Team.Apex/](https://sky-ydv2008.github.io/Team.Apex/)
+- **Live Render Web App & REST API**: [https://apex-innovators.onrender.com/](https://apex-innovators.onrender.com/)
+- **Android App (APK)**: [Download ApexInnovators.apk](https://github.com/Sky-ydv2008/Team.Apex/releases/download/v1.0.0/ApexInnovators.apk)
+- **Windows App (.exe)**: [Download ApexInnovators-Windows.exe](https://github.com/Sky-ydv2008/Team.Apex/releases/download/v1.0.3/ApexInnovators-Windows.exe)
 Built from the full implementation plan (see `docs/architecture.md`) as an MVP:
 
 - **Public website** — Home, Projects, Project Details, Hackathons, Hackathon Details, Team, Achievements, Community feed, Events, Resources, Contact.
