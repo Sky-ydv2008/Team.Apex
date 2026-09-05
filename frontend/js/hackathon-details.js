@@ -15,7 +15,60 @@ function missing(text) {
   return `<p class="faint" style="font-size:0.92rem;">${esc(text)}</p>`;
 }
 
+function updateHackathonSEO(h) {
+  if (!h || !h.name) return;
+  const pageTitle = `${h.name} — Apex Innovators Hackathon`;
+  const desc = h.challenge || h.description || `Read about Apex Innovators competing in ${h.name}.`;
+  document.title = pageTitle;
+
+  const setMeta = (selector, attr, val) => {
+    let el = document.querySelector(selector);
+    if (!el) {
+      el = document.createElement("meta");
+      const parts = selector.split("=");
+      const key = parts[0].replace("[", "");
+      const prop = parts[1].replace("]", "").replace(/"/g, "");
+      el.setAttribute(key, prop);
+      document.head.appendChild(el);
+    }
+    el.setAttribute(attr, val);
+  };
+
+  setMeta('meta[name="description"]', "content", desc);
+  setMeta('meta[property="og:title"]', "content", pageTitle);
+  setMeta('meta[property="og:description"]', "content", desc);
+  setMeta('meta[name="twitter:title"]', "content", pageTitle);
+  setMeta('meta[name="twitter:description"]', "content", desc);
+
+  let ld = document.getElementById("hackathon-schema-ld");
+  if (!ld) {
+    ld = document.createElement("script");
+    ld.id = "hackathon-schema-ld";
+    ld.type = "application/ld+json";
+    document.head.appendChild(ld);
+  }
+
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "Event",
+    "name": h.name,
+    "description": desc,
+    "organizer": {
+      "@type": "Organization",
+      "name": h.organizer || "Hackathon Organizer"
+    },
+    "performer": {
+      "@type": "Organization",
+      "name": "Apex Innovators",
+      "url": "https://sky-ydv2008.github.io/Team.Apex/"
+    }
+  };
+  if (h.date) schema.startDate = h.date;
+  ld.textContent = JSON.stringify(schema);
+}
+
 function render(h) {
+  updateHackathonSEO(h);
   const members = Array.isArray(h.members) ? h.members : [];
   const projects = Array.isArray(h.projects) ? h.projects : [];
   const date = h.date ? formatDate(h.date) : "";

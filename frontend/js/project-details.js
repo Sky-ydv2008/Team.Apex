@@ -24,8 +24,59 @@ function urlButton(label, url, iconName, primary) {
   </a>`;
 }
 
+function updateProjectSEO(p) {
+  if (!p || !p.title) return;
+  const pageTitle = `${p.title} — Apex Innovators Project`;
+  const desc = p.tagline || p.description || `Explore ${p.title} built by Apex Innovators.`;
+  document.title = pageTitle;
+
+  const setMeta = (selector, attr, val) => {
+    let el = document.querySelector(selector);
+    if (!el) {
+      el = document.createElement("meta");
+      const parts = selector.split("=");
+      const key = parts[0].replace("[", "");
+      const prop = parts[1].replace("]", "").replace(/"/g, "");
+      el.setAttribute(key, prop);
+      document.head.appendChild(el);
+    }
+    el.setAttribute(attr, val);
+  };
+
+  setMeta('meta[name="description"]', "content", desc);
+  setMeta('meta[property="og:title"]', "content", pageTitle);
+  setMeta('meta[property="og:description"]', "content", desc);
+  setMeta('meta[name="twitter:title"]', "content", pageTitle);
+  setMeta('meta[name="twitter:description"]', "content", desc);
+
+  let ld = document.getElementById("project-schema-ld");
+  if (!ld) {
+    ld = document.createElement("script");
+    ld.id = "project-schema-ld";
+    ld.type = "application/ld+json";
+    document.head.appendChild(ld);
+  }
+
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": p.title,
+    "description": desc,
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Web, Android, Windows",
+    "author": {
+      "@type": "Organization",
+      "name": "Apex Innovators",
+      "url": "https://sky-ydv2008.github.io/Team.Apex/"
+    }
+  };
+  if (p.githubUrl) schema.codeRepository = p.githubUrl;
+  if (p.demoUrl) schema.url = p.demoUrl;
+  ld.textContent = JSON.stringify(schema);
+}
+
 function render(project) {
-  const techs = Array.isArray(project.technologies) ? project.technologies : [];
+  updateProjectSEO(project);
   const members = Array.isArray(project.members) ? project.members : [];
   const hackathons = Array.isArray(project.hackathons) ? project.hackathons : [];
 
